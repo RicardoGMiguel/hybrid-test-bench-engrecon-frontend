@@ -1,0 +1,86 @@
+{
+  "name": "template-react-2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=development eslint --cache"
+    ],
+    "*.json,.{eslintrc,prettierrc}": [
+      "prettier --ignore-path .eslintignore --parser json --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ],
+    "*.{html,md,yml}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ]
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@hookform/resolvers": "^3.2.0",
+    "@nivo/bar": "^0.87.0",
+    "@nivo/core": "^0.87.0",
+    "@nivo/pie": "^0.87.0",
+    "@tanstack/react-query": "^4.32.6",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "axios": "^1.3.6",
+    "d3": "^7.9.0",
+    "date-fns": "^3.6.0",
+    "framer-motion": "^10.15.1",
+    "polished": "^4.2.2",
+    "react": "^18.3.1",
+    "react-datepicker": "^7.2.0",
+    "react-dom": "^18.3.1",
+    "react-gauge-component": "^1.2.21",
+    "react-hook-form": "^7.45.4",
+    "react-icons": "^4.10.1",
+    "react-input-mask": "^2.0.4",
+    "react-router-dom": "^6.14.2",
+    "react-spring": "8.0.27",
+    "react-toastify": "^9.1.3",
+    "styled-components": "^5.3.10",
+    "uuid": "^9.0.0",
+    "vite": "^4.3.0",
+    "vite-plugin-pwa": "^0.20.0",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@julr/vite-plugin-validate-env": "^0.2.4",
+    "@types/node": "^20.1.2",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-input-mask": "^3.0.2",
+    "@types/styled-components": "^5.1.26",
+    "@types/uuid": "^9.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.5",
+    "@typescript-eslint/parser": "^5.59.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.38.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.2"
+  }
+}

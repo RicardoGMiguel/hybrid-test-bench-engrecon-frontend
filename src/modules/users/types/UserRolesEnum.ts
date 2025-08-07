@@ -1,0 +1,6 @@
+export enum UserRolesEnum {
+  GLOBAL_ADMIN = 'GLOBAL_ADMIN',
+  CUSTOMER_ADMIN = 'CUSTOMER_ADMIN',
+  HEALTH = 'HEALTH',
+  VIEWER = 'VIEWER',
+}
