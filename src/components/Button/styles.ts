@@ -31,8 +31,8 @@ export const Container = styled.button<IContainerProps>`
   border-radius: 10px;
   font-weight: 500;
   font-size: 1.2em;
-  border: 2px solid ${({ theme }) => theme.colors.orange};
-  background-color: ${({ theme }) => theme.colors.orange};
+  border: 2px solid ${({ theme }) => theme.colors.dt_gray};
+  background-color: ${({ theme }) => theme.colors.dt_gray};
   user-select: none;
   transition: 0.2s ease all;
   display: flex;

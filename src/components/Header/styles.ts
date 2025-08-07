@@ -21,14 +21,14 @@ export const LogoContent = styled.div`
 export const NavigationBar = styled.div`
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 2rem;
 
   > img {
-    height: 100px;
+    height: 75px;
   }
 
   #engreconLogo {
-    height: 50px;
+    height: 40px;
     filter: brightness(0) invert(1);
   }
 

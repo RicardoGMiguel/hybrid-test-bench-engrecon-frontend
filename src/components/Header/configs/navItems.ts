@@ -6,7 +6,7 @@ export const navItems = () =>
   [
     {
       route: PrivatePathsEnum.HOME,
-      label: 'Home',
+      label: 'Acoplamento',
     },
     {
       route: PrivatePathsEnum.USERS,

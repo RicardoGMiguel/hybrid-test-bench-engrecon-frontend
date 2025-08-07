@@ -4,8 +4,10 @@ const themeDefaults = {
   colors: {
     dt_red: '#881733',
     dt_unselected: '#D0D0D0D0',
+    dt_gray: '#303A42',
+    dt_font: '#535960',
 
-    exyGray: '#3E4C59',
+    exyGray: '#303A42',
     exyGrayHover: '#163a5c',
     exyGrayListBackground: '#556879',
 

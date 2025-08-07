@@ -9,12 +9,9 @@ export const Container = styled.div`
 
 export const Header = styled.div`
   width: 100%;
-  height: 20%;
-  padding-bottom: 2rem;
+  height: 8%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  gap: 10px;
 
   > div {
     width: 100%;
@@ -26,31 +23,66 @@ export const Header = styled.div`
 
 export const Content = styled.div`
   width: 100%;
-  height: 80%;
+  height: 92%;
   padding: 0.5rem;
   padding-left: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  overflow-y: auto;
+`;
 
-  &::-webkit-scrollbar-track {
-    padding: 0 2px;
-    margin: 2px 0;
-    border-radius: 0px;
-    background: ${({ theme }) => theme.colors.white};
-  }
+export const LeftContainer = styled.div`
+  width: 30%;
+  height: 100%;
+  padding: 1rem;
 
-  &::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background: ${({ theme }) => theme.colors.exyGray};
+  > div {
+    width: 100%;
+    height: 100%;
+    background: ${({ theme }) => theme.colors.lightGray};
+    border-radius: 1rem;
   }
+`;
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.black};
-  }
+export const RightContainer = styled.div`
+  width: 70%;
+  height: 100%;
+  padding: 1rem;
 
-  &::-webkit-scrollbar {
-    width: 5px;
+  > div {
+    width: 100%;
+    height: 100%;
+    background: ${({ theme }) => theme.colors.lightGray};
+    border-radius: 1rem;
   }
+`;
+
+export const InfoContainer = styled.div`
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+export const Info = styled.div`
+  width: 100%;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const InfoTitle = styled.h1`
+  font-size: 1.6rem;
+  color: ${({ theme }) => theme.colors.dt_gray};
+`;
+
+export const InfoLabel = styled.h1`
+  font-size: 1.4rem;
+  color: ${({ theme }) => theme.colors.dt_gray};
+`;
+
+export const InfoText = styled.h1`
+  font-size: 1.4rem;
+  color: ${({ theme }) => theme.colors.dt_font};
 `;
