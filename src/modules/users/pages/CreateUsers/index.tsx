@@ -5,7 +5,7 @@ import { FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { FiSave } from 'react-icons/fi';
 import Title from '@components/Title';
 import FormInput from '@components/Form/FormInput';
-import FormSelect, { OptionItem } from '@components/Form/FormSelect';
+import FormSelect from '@components/Form/FormSelect';
 import Button from '@components/Button';
 
 import { UserRolesEnum } from '@modules/users/types/UserRolesEnum';
@@ -14,7 +14,6 @@ import { TranslateRoleEN } from '@modules/users/utils/translateRoleToEN';
 import { TranslateRolePT } from '@modules/users/utils/translateRoleToPT';
 import { IFormCreateUser } from '@modules/users/interfaces/IUser';
 import { useAuth } from '@modules/auth/hooks/auth/index';
-import { useCustomer } from '@modules/customers/hooks/index';
 import { useUser } from '../../hooks/index';
 import {
   Container,
@@ -36,28 +35,10 @@ const CreateUsers: React.FC = () => {
 
   const { user } = useAuth();
   const { CreateUser } = useUser();
-  const { ListCustomers } = useCustomer();
-
-  const [customersOptions, setCustomersOptions] = useState<OptionItem[]>([]);
 
   useEffect(() => {
-    document.title = 'Exy | Cadastro de Usuários';
+    document.title = 'Hybrid Test | Cadastro de Usuários';
   }, []);
-
-  const { data: customersData } = ListCustomers(
-    user.role !== UserRolesEnum.GLOBAL_ADMIN
-  );
-
-  useEffect(() => {
-    if (customersData) {
-      const options: OptionItem[] = customersData.map((customer) => ({
-        label: customer.name,
-        value: customer.id,
-      }));
-
-      setCustomersOptions(options);
-    }
-  }, [customersData]);
 
   const {
     getFieldState,
@@ -279,7 +260,7 @@ const CreateUsers: React.FC = () => {
                     control={control}
                     name="customer_id"
                     placeholder="Selecione uma empresa"
-                    options={customersOptions}
+                    options={[]}
                   />
                   {errors.customer_id ? (
                     <FormErrorMessage>

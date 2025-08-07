@@ -2,6 +2,9 @@ import { keyframes } from 'styled-components';
 
 const themeDefaults = {
   colors: {
+    dt_red: '#881733',
+    dt_unselected: '#D0D0D0D0',
+
     exyGray: '#3E4C59',
     exyGrayHover: '#163a5c',
     exyGrayListBackground: '#556879',

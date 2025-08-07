@@ -50,7 +50,7 @@ const Login: React.FC = () => {
 
         await signIn(data);
 
-        navigate(PrivatePathsEnum.PROJECTS);
+        navigate(PrivatePathsEnum.HOME);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
   );
 
   useEffect(() => {
-    document.title = 'Exy | Login';
+    document.title = 'Hybrid Test | Login';
   }, []);
 
   return (

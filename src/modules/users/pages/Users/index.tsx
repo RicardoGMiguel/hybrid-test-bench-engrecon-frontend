@@ -37,7 +37,7 @@ const Users: React.FC = () => {
   } = useDisclosure();
 
   useEffect(() => {
-    document.title = 'Exy | Usuários';
+    document.title = 'Hybrid Test | Usuários';
   }, []);
 
   const { ListUsers, DeleteUser, ResetPassword } = useUser();

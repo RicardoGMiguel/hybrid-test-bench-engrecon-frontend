@@ -22,12 +22,12 @@ export const Label = styled.p<ILabelProps>`
   font-size: 1.25rem;
   line-height: normal;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.dt_unselected};
 
   ${({ theme, $isCurrentRoute }) =>
     $isCurrentRoute &&
     css`
-      color: ${theme.colors.orange};
+      color: ${theme.colors.white};
     `}
 
   @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {

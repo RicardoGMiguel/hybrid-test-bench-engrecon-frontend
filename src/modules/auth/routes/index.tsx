@@ -12,7 +12,7 @@ const AuthenticationRoutes = (
     <Route
       path={PublicPathsEnum.LOGIN}
       element={
-        <EnsureLoggedOutRoute redirectTo={PrivatePathsEnum.PROJECTS}>
+        <EnsureLoggedOutRoute redirectTo={PrivatePathsEnum.HOME}>
           <Login />
         </EnsureLoggedOutRoute>
       }

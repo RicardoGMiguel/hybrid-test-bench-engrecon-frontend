@@ -14,7 +14,7 @@ const NavItem: React.FC<INavItemProps> = ({ route, label }) => {
   const pathMatch = useMatch(pathname);
 
   const isCurrentRoute = useMemo(
-    () => pathMatch?.pathnameBase.split('/')[1] === route.split('/')[1],
+    () => pathMatch?.pathnameBase?.split('/')[1] === route?.split('/')[1],
     [pathMatch, route]
   );
 

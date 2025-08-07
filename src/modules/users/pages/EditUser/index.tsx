@@ -34,7 +34,7 @@ const EditUser: React.FC = () => {
   const { UpdateUser } = useUser();
 
   useEffect(() => {
-    document.title = 'Exy | Edição de Usuário';
+    document.title = 'Hybrid Test | Edição de Usuário';
   }, [state.selectedUser]);
 
   const {

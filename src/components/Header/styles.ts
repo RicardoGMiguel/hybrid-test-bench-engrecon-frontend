@@ -7,7 +7,7 @@ export const Container = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.colors.exyGray};
+  background-color: ${({ theme }) => theme.colors.dt_red};
 
   box-shadow: ${({ theme }) => theme.shadows.outer};
 `;
@@ -24,7 +24,12 @@ export const NavigationBar = styled.div`
   gap: 3rem;
 
   > img {
-    height: 55px;
+    height: 100px;
+  }
+
+  #engreconLogo {
+    height: 50px;
+    filter: brightness(0) invert(1);
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {

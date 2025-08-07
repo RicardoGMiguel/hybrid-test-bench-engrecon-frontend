@@ -1,19 +1,16 @@
 import React from 'react';
 
 import { FiLogOut } from 'react-icons/fi';
-import { PiKeyBold } from 'react-icons/pi';
-import { useNavigate } from 'react-router-dom';
 
 import { IconButton, useDisclosure } from '@chakra-ui/react';
 
 import { useAuth } from '@modules/auth/hooks/auth';
 
 import Confirmation from '@components/Confirmation';
-import { PrivatePathsEnum } from '@routes/privateRoutes/privatePaths';
 import { TranslateRolePT } from '@modules/users/utils/translateRoleToPT';
-import { UserRolesEnum } from '@modules/users/types/UserRolesEnum';
 import { navItems } from './configs/navItems';
-import ExyLogo from './assets/ExyLogo.png';
+import DTLogo from './assets/logo_DT.png';
+import EngreconLogo from './assets/engrecon_icon_blue.png';
 
 import {
   Container,
@@ -28,8 +25,6 @@ const Header: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, signOut } = useAuth();
 
-  const Navigate = useNavigate();
-
   return (
     <>
       <Confirmation
@@ -43,8 +38,9 @@ const Header: React.FC = () => {
       <Container>
         <LogoContent>
           <NavigationBar>
-            <img src={ExyLogo} alt="IconExy" />
-            {navItems(user.role).map(({ route, label }) => (
+            <img src={DTLogo} alt="DTIcon" />
+            <img src={EngreconLogo} alt="EngreconLogo" id="engreconLogo" />
+            {navItems().map(({ route, label }) => (
               <NavItem key={label} route={route} label={label} />
             ))}
           </NavigationBar>
@@ -54,17 +50,6 @@ const Header: React.FC = () => {
             <h1>{user.name}</h1>
             <h2>{TranslateRolePT(user.role)}</h2>
           </UserInfo>
-
-          {user.role !== UserRolesEnum.GLOBAL_ADMIN && (
-            <IconButton
-              marginRight={8}
-              icon={<PiKeyBold />}
-              colorScheme="white"
-              aria-label="Alterar senha"
-              fontSize="40px"
-              onClick={() => Navigate(PrivatePathsEnum.CHANGE_PASSWORD)}
-            />
-          )}
 
           <IconButton
             icon={<FiLogOut />}
