@@ -22,12 +22,7 @@ const ErrorBoundary: React.FC = () => {
           {error.data}
         </Text>
 
-        <Button
-          label="Projects"
-          type="button"
-          asLink
-          to={PrivatePathsEnum.PROJECTS}
-        />
+        <Button label="Home" type="button" asLink to={PrivatePathsEnum.HOME} />
       </Container>
     );
   }
@@ -53,12 +48,7 @@ const ErrorBoundary: React.FC = () => {
         </Code>
       )}
 
-      <Button
-        label="Projects"
-        type="button"
-        asLink
-        to={PrivatePathsEnum.PROJECTS}
-      />
+      <Button label="Home" type="button" asLink to={PrivatePathsEnum.HOME} />
     </Container>
   );
 };

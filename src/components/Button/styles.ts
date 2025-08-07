@@ -24,13 +24,13 @@ export const Label = styled.p<{ labelColor?: string }>`
 `;
 
 export const Container = styled.button<IContainerProps>`
-  height: ${({ size }) => (size === 'sm' ? 30 : size === 'md' ? 40 : 50)}px;
-  min-width: 120px;
-  max-width: 260px;
-  padding: 12px;
+  height: ${({ size }) => (size === 'sm' ? 30 : size === 'md' ? 40 : 70)}px;
+  min-width: 240px;
+  max-width: 360px;
+  padding: 24px;
   border-radius: 10px;
   font-weight: 500;
-  font-size: 1.2em;
+  font-size: 1.6em;
   border: 2px solid ${({ theme }) => theme.colors.dt_gray};
   background-color: ${({ theme }) => theme.colors.dt_gray};
   user-select: none;

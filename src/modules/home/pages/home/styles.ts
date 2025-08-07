@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   height: 100%;
@@ -40,6 +40,8 @@ export const LeftContainer = styled.div`
     height: 100%;
     background: ${({ theme }) => theme.colors.lightGray};
     border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -85,4 +87,52 @@ export const InfoLabel = styled.h1`
 export const InfoText = styled.h1`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.dt_font};
+`;
+
+export const CouplingModeButtons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const RadioButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const ButtonLabel = styled.h1`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.dt_font};
+`;
+
+export const RadioButton = styled.div<{ selected: boolean }>`
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 0.7rem;
+  border: solid 1px ${({ theme }) => theme.colors.dt_gray};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  > div {
+    width: 70%;
+    height: 70%;
+    border-radius: 100px;
+    background-color: transparent;
+
+    ${({ selected }) =>
+      selected &&
+      css`
+        background-color: ${({ theme }) => theme.colors.dt_red};
+      `}
+  }
+`;
+
+export const ButtonsContainer = styled.div`
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 `;
