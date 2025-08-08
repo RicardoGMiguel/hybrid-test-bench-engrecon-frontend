@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { CouplingModesEnum } from '@modules/home/enums/couplingModes.enum';
 import SettingsInput from '@components/Form/SettingsInput';
 import Button from '@components/Button';
+import Oscilloscope from '@modules/home/components/oscilloscope';
 import {
   Container,
   Content,
@@ -146,7 +147,9 @@ const Home: React.FC = () => {
           </div>
         </LeftContainer>
         <RightContainer>
-          <div />
+          <div>
+            <Oscilloscope />
+          </div>
         </RightContainer>
       </Content>
     </Container>
