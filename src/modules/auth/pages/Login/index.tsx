@@ -10,14 +10,18 @@ import LoginInput from '@components/Form/LoginInput';
 import { PrivatePathsEnum } from '@routes/privateRoutes/privatePaths';
 import { useAuth } from '@modules/auth/hooks/auth';
 
-import imgLogo from '@assets/login-logo.png';
+import DTLogo from '@components/Header/assets/logo_DT.png';
+import EngLogo from '@components/Header/assets/engrecon_icon_blue.png';
+
 import Button from '../../../../components/Button';
 
 import ForgotPasswordMessage from './ForgotPasswordMessage';
 
 import {
   Container,
-  LoginLogo,
+  LogosContainer,
+  DTLogoImh,
+  EngLogoImg,
   Form,
   FormContainer,
   ForgotContainer,
@@ -73,7 +77,10 @@ const Login: React.FC = () => {
       <ForgotPasswordMessage isOpen={isOpen} onClose={onClose} />
       <Container>
         <FormContainer>
-          <LoginLogo src={imgLogo} alt="Logo" />
+          <LogosContainer>
+            <DTLogoImh src={DTLogo} alt="DTLogo" />
+            <EngLogoImg src={EngLogo} alt="EngLogo" />
+          </LogosContainer>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.email}>
               <LoginInput

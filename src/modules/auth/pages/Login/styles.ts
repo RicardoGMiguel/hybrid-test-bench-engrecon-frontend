@@ -9,16 +9,28 @@ export const Container = styled.div`
   justify-content: center;
 `;
 
-export const LoginLogo = styled.img`
-  width: 246px;
+export const DTLogoImh = styled.img`
+  width: 300px;
+`;
+
+export const EngLogoImg = styled.img`
+  width: 300px;
+  filter: brightness(0) invert(1);
+`;
+
+export const LogosContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 `;
 
 export const FormContainer = styled.div`
-  width: 630px;
-  height: 550px;
+  width: 830px;
+  height: 650px;
   border-radius: 2.8rem;
   padding: 4rem;
-  background-color: ${themeDefaults.colors.exyGray};
+  background-color: ${themeDefaults.colors.dt_red};
   display: flex;
   flex-direction: column;
   align-items: center;
