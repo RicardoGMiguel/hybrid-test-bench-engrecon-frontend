@@ -1,43 +1,48 @@
 import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
+import { IOscilloscopeProps } from '../../interfaces/IOscilloscopeProps';
 import { Container } from './styles';
 
-const phaseShift = 0.0008;
+// const phaseShift = 0.0008;
 
-const staticData = [
-  {
-    id: 'Signal 1',
-    color: 'hsl(0, 70%, 50%)',
-    data: [
-      { x: 0, y: 0 },
-      { x: 0.01, y: 1 },
-      { x: 0.02, y: 0 },
-      { x: 0.03, y: 1 },
-      { x: 0.04, y: 0 },
-      { x: 0.05, y: 1 },
-      { x: 0.06, y: 0 },
-      { x: 0.07, y: 1 },
-      { x: 0.08, y: 0 },
-    ],
-  },
-  {
-    id: 'Signal 2',
-    color: 'hsl(240, 70%, 50%)',
-    data: [
-      { x: 0, y: 0 },
-      { x: 0.01 + phaseShift, y: 1 },
-      { x: 0.02 + phaseShift, y: 0 },
-      { x: 0.03 + phaseShift, y: 1 },
-      { x: 0.04 + phaseShift, y: 0 },
-      { x: 0.05 + phaseShift, y: 1 },
-      { x: 0.06 + phaseShift, y: 0 },
-      { x: 0.07 + phaseShift, y: 1 },
-      { x: 0.08 + phaseShift, y: 0 },
-    ],
-  },
-];
+// const staticData: IOscilloscopeProps[] = [
+//   {
+//     id: 'Signal 1',
+//     color: 'hsl(0, 70%, 50%)',
+//     data: [
+//       { x: 0, y: 0 },
+//       { x: 0.01, y: 1 },
+//       { x: 0.02, y: 0 },
+//       { x: 0.03, y: 1 },
+//       { x: 0.04, y: 0 },
+//       { x: 0.05, y: 1 },
+//       { x: 0.06, y: 0 },
+//       { x: 0.07, y: 1 },
+//       { x: 0.08, y: 0 },
+//     ],
+//   },
+//   {
+//     id: 'Signal 2',
+//     color: 'hsl(240, 70%, 50%)',
+//     data: [
+//       { x: 0, y: 0 },
+//       { x: 0.01 + phaseShift, y: 1 },
+//       { x: 0.02 + phaseShift, y: 0 },
+//       { x: 0.03 + phaseShift, y: 1 },
+//       { x: 0.04 + phaseShift, y: 0 },
+//       { x: 0.05 + phaseShift, y: 1 },
+//       { x: 0.06 + phaseShift, y: 0 },
+//       { x: 0.07 + phaseShift, y: 1 },
+//       { x: 0.08 + phaseShift, y: 0 },
+//     ],
+//   },
+// ];
 
-const OscilloscopeNivo: React.FC = () => (
+interface ChartProps {
+  chartData: IOscilloscopeProps[];
+}
+
+const OscilloscopeNivo: React.FC<ChartProps> = ({ chartData }) => (
   // const [data, setData] = useState(staticData);
   // const [time, setTime] = useState(0);
 
@@ -98,8 +103,8 @@ const OscilloscopeNivo: React.FC = () => (
 
   <Container>
     <ResponsiveLine
-      data={staticData}
-      margin={{ top: 20, right: 30, bottom: 30, left: 40 }}
+      data={chartData}
+      margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
       xScale={{ type: 'linear', min: 'auto', max: 'auto' }}
       yScale={{ type: 'linear', min: -0.2, max: 1.2 }} // para espaçamento vertical
       axisBottom={{
@@ -113,6 +118,14 @@ const OscilloscopeNivo: React.FC = () => (
         legendOffset: -35,
         tickSize: 5,
         tickPadding: 5,
+        tickValues: [0, 1],
+        style: {
+          legend: {
+            text: {
+              fontSize: 16,
+            },
+          },
+        },
       }}
       enablePoints
       pointSize={6}
@@ -129,7 +142,7 @@ const OscilloscopeNivo: React.FC = () => (
           itemDirection: 'left-to-right',
           itemWidth: 80,
           itemHeight: 20,
-          symbolSize: 12,
+          symbolSize: 20,
         },
       ]}
       colors={{ scheme: 'category10' }}

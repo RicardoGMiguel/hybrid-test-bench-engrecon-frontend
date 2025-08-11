@@ -7,6 +7,7 @@ import { CouplingModesEnum } from '@modules/home/enums/couplingModes.enum';
 import SettingsInput from '@components/Form/SettingsInput';
 import Button from '@components/Button';
 import Oscilloscope from '@modules/home/components/oscilloscope';
+import { IOscilloscopeProps } from '@modules/home/interfaces/IOscilloscopeProps';
 import {
   Container,
   Content,
@@ -35,6 +36,16 @@ const Home: React.FC = () => {
   }, []);
 
   const [couplingMode, setCouplingMode] = useState<CouplingModesEnum>();
+  const [chartOscilloscopeData, setChartOscilloscopeData] = useState<
+    IOscilloscopeProps[]
+  >([
+    {
+      id: 'Sinal 1',
+      color: 'hsl(240, 70%, 50%)',
+      data: [],
+    },
+  ]);
+
   const [, setIsLoading] = useState(false);
 
   const {
@@ -57,6 +68,17 @@ const Home: React.FC = () => {
     } catch (error) {
       setIsLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onmessage = (event) => {
+      const comingData: IOscilloscopeProps[] = JSON.parse(event.data);
+      console.log(comingData);
+
+      setChartOscilloscopeData(comingData);
+    };
   }, []);
 
   return (
@@ -148,7 +170,7 @@ const Home: React.FC = () => {
         </LeftContainer>
         <RightContainer>
           <div>
-            <Oscilloscope />
+            <Oscilloscope chartData={chartOscilloscopeData} />
           </div>
         </RightContainer>
       </Content>
