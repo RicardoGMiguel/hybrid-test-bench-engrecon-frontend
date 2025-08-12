@@ -61,6 +61,7 @@ export const RightContainer = styled.div`
 export const InfoContainer = styled.div`
   width: 100%;
   padding: 2rem;
+  padding-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -69,6 +70,7 @@ export const InfoContainer = styled.div`
 export const Info = styled.div`
   width: 100%;
   padding-left: 1rem;
+  padding-bottom: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -84,9 +86,15 @@ export const InfoLabel = styled.h1`
   color: ${({ theme }) => theme.colors.dt_gray};
 `;
 
-export const InfoText = styled.h1`
+export const InfoText = styled.h1<{ color?: string }>`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.dt_font};
+
+  ${({ color }) =>
+    color &&
+    css`
+      color: ${color};
+    `}
 `;
 
 export const CouplingModeButtons = styled.div`
@@ -135,4 +143,5 @@ export const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  gap: 2rem;
 `;

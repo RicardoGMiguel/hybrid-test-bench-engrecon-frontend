@@ -9,11 +9,14 @@ interface IContainerProps {
   borderRadius: number;
   backgroundColor?: string;
   borderColor?: string;
+  width?: number;
+  height?: number;
+  selected?: boolean;
 }
 
 export const Label = styled.p<{ labelColor?: string }>`
   font-weight: 700;
-  line-height: 1;
+  font-size: 2rem;
   color: ${({ theme }) => theme.colors.white};
 
   ${({ labelColor }) =>
@@ -25,12 +28,11 @@ export const Label = styled.p<{ labelColor?: string }>`
 
 export const Container = styled.button<IContainerProps>`
   height: ${({ size }) => (size === 'sm' ? 30 : size === 'md' ? 40 : 70)}px;
-  min-width: 240px;
-  max-width: 360px;
-  padding: 24px;
+  width: 100%;
+  /* padding: 24px; */
   border-radius: 10px;
   font-weight: 500;
-  font-size: 1.6em;
+  /* font-size: 2rem; */
   border: 2px solid ${({ theme }) => theme.colors.dt_gray};
   background-color: ${({ theme }) => theme.colors.dt_gray};
   user-select: none;
@@ -39,6 +41,27 @@ export const Container = styled.button<IContainerProps>`
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  ${({ selected }) =>
+    selected
+      ? css`
+          background-color: ${({ theme }) => theme.colors.dt_gray};
+        `
+      : css`
+          background-color: ${({ theme }) => theme.colors.mediumGray};
+        `}
+
+  ${({ width }) =>
+    width &&
+    css`
+      width: ${width}px;
+    `}
+
+  ${({ height }) =>
+    height &&
+    css`
+      height: ${height}px;
+    `}
 
   @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {
     height: ${({ size }) => (size === 'sm' ? 22 : size === 'md' ? 32 : 42)}px;

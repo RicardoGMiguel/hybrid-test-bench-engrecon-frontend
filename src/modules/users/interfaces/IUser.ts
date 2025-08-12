@@ -1,5 +1,3 @@
-import { ICustomer } from '@modules/customers/interfaces/ICustomer';
-
 export interface IUser {
   id: string;
   name: string;
@@ -12,7 +10,6 @@ export interface IUser {
   role: string;
   is_first_login: boolean;
   customer_id: string;
-  customer: ICustomer;
   created_at: Date;
   updated_at: Date;
 }

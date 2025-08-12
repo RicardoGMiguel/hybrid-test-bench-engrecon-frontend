@@ -8,17 +8,5 @@ export const api = axios.create({
 export const apiRoutes = {
   sessions: '/sessions',
   users: '/users',
-  customers: '/customers',
-  employees: '/employees',
-  equipments: '/equipments',
-  projects: '/projects',
-  project_employees: '/project_employees',
-  auto_evaluations: '/auto_evaluations',
-  kinesis_functional_evaluations: '/kinesis_functional_evaluations',
-  evaluations: '/evaluations',
-  sensors: '/sensors',
-  attendance_lists: '/attendance_lists',
-  monitoring_evaluations: '/monitoring_evaluations',
-  reports: '/reports',
-  file_templates: '/file_templates',
+  serialCommand: '/serial/command',
 };

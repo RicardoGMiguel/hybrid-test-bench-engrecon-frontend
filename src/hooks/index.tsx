@@ -6,6 +6,7 @@ import themeDefaults from '@style/themeDefaults';
 
 import { AuthProvider } from '@modules/auth/hooks/auth';
 import { UserProvider } from '@modules/users/hooks/index';
+import { HomeProvider } from '@modules/home/hooks/index';
 
 import { ToastProvider } from './toast';
 import { ChakraProvider } from './ChakraProvider';
@@ -25,7 +26,9 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
       <AnimatePresence>
         <ToastProvider>
           <AuthProvider>
-            <UserProvider>{children}</UserProvider>
+            <UserProvider>
+              <HomeProvider>{children}</HomeProvider>
+            </UserProvider>
           </AuthProvider>
         </ToastProvider>
       </AnimatePresence>

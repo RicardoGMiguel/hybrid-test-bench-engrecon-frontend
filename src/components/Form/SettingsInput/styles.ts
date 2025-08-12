@@ -17,12 +17,12 @@ export const Container = styled.div`
 `;
 
 export const Label = styled.p`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.exyGray};
 
   @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `;
 
@@ -33,7 +33,7 @@ export const InputComponent = styled(InputMask)`
 export const Content = styled.div<ContainerInterface>`
   display: flex;
   width: 25%;
-  height: 1.8rem;
+  height: 2.5rem;
   align-items: center;
   align-content: center;
   background-color: ${({ theme }) => theme.colors.white};
