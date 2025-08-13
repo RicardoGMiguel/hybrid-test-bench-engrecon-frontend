@@ -46,7 +46,7 @@ const Home: React.FC = () => {
   const { SendCommand } = useHome();
 
   const [couplingMode, setCouplingMode] = useState<CouplingModesEnum>(
-    CouplingModesEnum.SAME_PHASE
+    CouplingModesEnum.FREE
   );
   const [command, setCommand] = useState<CommandEnum>(CommandEnum.stop);
   const [comingData, setComingData] = useState<IComingData>({
@@ -217,7 +217,7 @@ const Home: React.FC = () => {
                 <InfoTitle>Modos de acoplamento</InfoTitle>
                 <CouplingModeButtons>
                   <RadioButtonContainer>
-                    <ButtonLabel>Livre</ButtonLabel>
+                    <ButtonLabel>Free</ButtonLabel>
                     <RadioButton
                       onClick={() => setCouplingMode(CouplingModesEnum.FREE)}
                       selected={!!(couplingMode === CouplingModesEnum.FREE)}
@@ -226,27 +226,19 @@ const Home: React.FC = () => {
                     </RadioButton>
                   </RadioButtonContainer>
                   <RadioButtonContainer>
-                    <ButtonLabel>Mesma velocidade</ButtonLabel>
+                    <ButtonLabel>Light</ButtonLabel>
                     <RadioButton
-                      onClick={() =>
-                        setCouplingMode(CouplingModesEnum.SAME_SPEED)
-                      }
-                      selected={
-                        !!(couplingMode === CouplingModesEnum.SAME_SPEED)
-                      }
+                      onClick={() => setCouplingMode(CouplingModesEnum.LIGHT)}
+                      selected={!!(couplingMode === CouplingModesEnum.LIGHT)}
                     >
                       <div />
                     </RadioButton>
                   </RadioButtonContainer>
                   <RadioButtonContainer>
-                    <ButtonLabel>Mesma velocidade e fase</ButtonLabel>
+                    <ButtonLabel>Heavy</ButtonLabel>
                     <RadioButton
-                      onClick={() =>
-                        setCouplingMode(CouplingModesEnum.SAME_PHASE)
-                      }
-                      selected={
-                        !!(couplingMode === CouplingModesEnum.SAME_PHASE)
-                      }
+                      onClick={() => setCouplingMode(CouplingModesEnum.HEAVY)}
+                      selected={!!(couplingMode === CouplingModesEnum.HEAVY)}
                     >
                       <div />
                     </RadioButton>

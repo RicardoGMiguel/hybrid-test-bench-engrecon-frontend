@@ -109,7 +109,7 @@ export const RadioButtonContainer = styled.div`
 `;
 
 export const ButtonLabel = styled.h1`
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: ${({ theme }) => theme.colors.dt_font};
 `;
 
