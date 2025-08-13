@@ -8,10 +8,12 @@ import { CouplingModesEnum } from '@modules/home/enums/couplingModes.enum';
 import SettingsInput from '@components/Form/SettingsInput';
 import Button from '@components/Button';
 import Oscilloscope from '@modules/home/components/oscilloscope';
-import { IOscilloscopeProps } from '@modules/home/interfaces/IOscilloscopeProps';
+import MessageComponent from '@modules/home/components/MessageComponent';
 import themeDefaults from '@style/themeDefaults';
 import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
 import { CommandEnum } from '@modules/home/enums/comman.enum';
+import { IComingData } from '@modules/home/interfaces/IComingData';
+import { StepperMotorStateEnum } from '@modules/home/enums/stepperMotorStates.enum';
 import { useHome } from '../../hooks/index';
 import {
   Container,
@@ -47,15 +49,16 @@ const Home: React.FC = () => {
     CouplingModesEnum.SAME_PHASE
   );
   const [command, setCommand] = useState<CommandEnum>(CommandEnum.stop);
-  const [chartOscilloscopeData, setChartOscilloscopeData] = useState<
-    IOscilloscopeProps[]
-  >([
-    {
-      id: 'Sinal 1',
-      color: 'hsl(240, 70%, 50%)',
-      data: [],
+  const [comingData, setComingData] = useState<IComingData>({
+    message: '-',
+    state: {
+      cardanSpeed: '-',
+      motorSpeed: '-',
+      delay: '-',
+      stepperMotorState: StepperMotorStateEnum.OFF,
     },
-  ]);
+    chart: [],
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [lastRequestTime, setLastRequestTime] = useState(0);
@@ -107,12 +110,21 @@ const Home: React.FC = () => {
           const ws = new WebSocket('ws://localhost:8080');
 
           ws.onmessage = (event) => {
-            const comingData: IOscilloscopeProps[] = JSON.parse(event.data);
+            const newComingData: IComingData = JSON.parse(event.data);
 
-            setChartOscilloscopeData(comingData);
+            setComingData(newComingData);
           };
         } else {
-          setChartOscilloscopeData([]);
+          setComingData({
+            message: '-',
+            state: {
+              cardanSpeed: '-',
+              motorSpeed: '-',
+              delay: '-',
+              stepperMotorState: StepperMotorStateEnum.OFF,
+            },
+            chart: [],
+          });
         }
       }
     },
@@ -169,22 +181,35 @@ const Home: React.FC = () => {
               </InfoContainer>
               <InfoContainer>
                 <InfoTitle>Condição atual</InfoTitle>
+                <MessageComponent message={comingData?.message || '-'} />
                 <Info>
                   <InfoLabel>Velocidade do eixo-cardan:</InfoLabel>
-                  <InfoText>1234 rpm</InfoText>
+                  <InfoText>
+                    {comingData.state?.cardanSpeed || '-'} rpm
+                  </InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Velocidade do motor elétrico:</InfoLabel>
-                  <InfoText>1120 rpm</InfoText>
+                  <InfoText>{comingData.state?.motorSpeed || '-'} rpm</InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Delay entre eixos:</InfoLabel>
-                  <InfoText>1,2 ms</InfoText>
+                  <InfoText>{comingData.state?.delay || '-'} ms</InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Motor de passo:</InfoLabel>
-                  <InfoText color={themeDefaults.colors.greenButtonColor}>
-                    Acionado
+                  <InfoText
+                    color={
+                      comingData.state?.stepperMotorState ===
+                      StepperMotorStateEnum.ON
+                        ? themeDefaults.colors.greenButtonColor
+                        : themeDefaults.colors.danger
+                    }
+                  >
+                    {comingData.state?.stepperMotorState ===
+                    StepperMotorStateEnum.ON
+                      ? 'Atividado'
+                      : 'Desativado'}
                   </InfoText>
                 </Info>
               </InfoContainer>
@@ -262,7 +287,7 @@ const Home: React.FC = () => {
         </LeftContainer>
         <RightContainer>
           <div>
-            <Oscilloscope chartData={chartOscilloscopeData} />
+            <Oscilloscope chartData={comingData.chart} />
           </div>
         </RightContainer>
       </Content>
