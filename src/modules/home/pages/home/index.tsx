@@ -208,7 +208,7 @@ const Home: React.FC = () => {
                   >
                     {comingData.state?.stepperMotorState ===
                     StepperMotorStateEnum.ON
-                      ? 'Atividado'
+                      ? 'Ativado'
                       : 'Desativado'}
                   </InfoText>
                 </Info>
