@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import Header from '@components/Header';
 import { Container } from './styles';
 
-const HomeLayout: React.FC = () => (
+const CyclesLayout: React.FC = () => (
   <>
     <Header />
     <Container>
@@ -13,4 +13,4 @@ const HomeLayout: React.FC = () => (
   </>
 );
 
-export default HomeLayout;
+export default CyclesLayout;

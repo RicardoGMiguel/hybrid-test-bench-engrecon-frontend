@@ -9,6 +9,10 @@ export const navItems = () =>
       label: 'Acoplamento',
     },
     {
+      route: PrivatePathsEnum.CYCLES,
+      label: 'Ciclos',
+    },
+    {
       route: PrivatePathsEnum.USERS,
       label: 'Usuários',
     },

@@ -1,13 +1,13 @@
 import { Route } from 'react-router-dom';
 
 import { PrivatePathsEnum } from '@routes/privateRoutes/privatePaths';
-import UsersLayout from '../layout';
+import HomeLayout from '../layout';
 import Home from '../pages/home';
 
-const UsersRoutes = (
-  <Route element={<UsersLayout />}>
+const HomeRoutes = (
+  <Route element={<HomeLayout />}>
     <Route path={PrivatePathsEnum.HOME} element={<Home />} />
   </Route>
 );
 
-export default UsersRoutes;
+export default HomeRoutes;
