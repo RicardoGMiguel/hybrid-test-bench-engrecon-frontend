@@ -1,4 +1,4 @@
 export enum CycleCommandEnum {
-  start = 'start',
-  stop = 'stop',
+  cycle_start = 'cycle_start',
+  cycle_stop = 'cycle_stop',
 }

@@ -9,4 +9,5 @@ export const apiRoutes = {
   sessions: '/sessions',
   users: '/users',
   serialCommand: '/serial/command',
+  serialCycleCommand: '/serial/cycle/command',
 };

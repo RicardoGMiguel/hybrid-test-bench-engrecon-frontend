@@ -1,16 +1,22 @@
 import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
-import { ICycleChartProps } from '../../interfaces/ICycleChart';
+import { ICycle } from '@modules/cycles/interfaces/ICycle';
 import { Container } from './styles';
 
 interface ChartProps {
-  chartData: ICycleChartProps[];
+  chartData: ICycle[];
 }
 
 const CycleChart: React.FC<ChartProps> = ({ chartData }) => (
   <Container>
     <ResponsiveLine
-      data={chartData}
+      data={[
+        {
+          id: 'Signal 1',
+          color: 'hsl(240, 70%, 50%)',
+          data: chartData,
+        },
+      ]}
       margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
       xScale={{ type: 'linear', min: 'auto', max: 'auto' }}
       yScale={{ type: 'linear', min: 'auto', max: 'auto' }}

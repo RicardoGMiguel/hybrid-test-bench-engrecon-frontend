@@ -49,12 +49,15 @@ export const RightContainer = styled.div`
   width: 60%;
   height: 100%;
   padding: 1rem;
+  display: flex;
 
   > div {
     width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.colors.lightGray};
     border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -145,4 +148,22 @@ export const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   gap: 2rem;
+`;
+
+export const CurrentStatusContainer = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+export const ImageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  > img {
+    height: 100%;
+  }
 `;
