@@ -13,7 +13,7 @@ import themeDefaults from '@style/themeDefaults';
 import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
 import { CommandEnum } from '@modules/home/enums/comman.enum';
 import { IComingData } from '@modules/home/interfaces/IComingData';
-import { StepperMotorStateEnum } from '@modules/home/enums/stepperMotorStates.enum';
+import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
 import { useHome } from '../../hooks/index';
 import {
   Container,
@@ -55,7 +55,7 @@ const Home: React.FC = () => {
       cardanSpeed: '-',
       motorSpeed: '-',
       delay: '-',
-      stepperMotorState: StepperMotorStateEnum.OFF,
+      stepperMotorState: '-',
     },
     chart: [],
   });
@@ -121,7 +121,7 @@ const Home: React.FC = () => {
               cardanSpeed: '-',
               motorSpeed: '-',
               delay: '-',
-              stepperMotorState: StepperMotorStateEnum.OFF,
+              stepperMotorState: '-',
             },
             chart: [],
           });
@@ -200,14 +200,12 @@ const Home: React.FC = () => {
                   <InfoLabel>Motor de passo:</InfoLabel>
                   <InfoText
                     color={
-                      comingData.state?.stepperMotorState ===
-                      StepperMotorStateEnum.ON
+                      comingData.state?.stepperMotorState === OnOffStateEnum.ON
                         ? themeDefaults.colors.greenButtonColor
                         : themeDefaults.colors.danger
                     }
                   >
-                    {comingData.state?.stepperMotorState ===
-                    StepperMotorStateEnum.ON
+                    {comingData.state?.stepperMotorState === OnOffStateEnum.ON
                       ? 'Ativado'
                       : 'Desativado'}
                   </InfoText>

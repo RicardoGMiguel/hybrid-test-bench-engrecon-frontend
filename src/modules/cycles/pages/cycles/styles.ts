@@ -117,7 +117,10 @@ export const ButtonLabel = styled.h1`
   color: ${({ theme }) => theme.colors.dt_font};
 `;
 
-export const RadioButton = styled.div<{ selected: boolean }>`
+export const RadioButton = styled.div<{
+  selected: boolean;
+  disabled?: boolean;
+}>`
   width: 1.4rem;
   height: 1.4rem;
   border-radius: 0.7rem;
@@ -126,6 +129,12 @@ export const RadioButton = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      cursor: not-allowed;
+    `}
 
   > div {
     width: 70%;
@@ -162,8 +171,39 @@ export const ImageContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  position: relative;
+`;
 
-  > img {
-    height: 100%;
-  }
+export const VehicleImg = styled.img`
+  height: 100%;
+`;
+
+export const RedArrow = styled.img<{ visible: boolean }>`
+  position: absolute;
+  top: 50.5%;
+  left: 60%;
+  height: 20%;
+  width: 10%;
+  display: flex;
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      display: none;
+    `}
+`;
+
+export const BlueArrow = styled.img<{ visible: boolean }>`
+  position: absolute;
+  top: 50.5%;
+  left: 45%;
+  height: 20%;
+  width: 10%;
+  display: flex;
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      display: none;
+    `}
 `;

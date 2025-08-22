@@ -1,6 +1,6 @@
 import Title from '@components/Title';
 import React, { useEffect, useState, useCallback } from 'react';
-import { useToast } from '@hooks/toast';
+
 import { useCycle } from '@modules/cycles/hooks/index';
 import Button from '@components/Button';
 
@@ -12,7 +12,11 @@ import { ICycle } from '@modules/cycles/interfaces/ICycle';
 import MessageComponent from '@modules/home/components/MessageComponent';
 import themeDefaults from '@style/themeDefaults';
 import { IFormSendCycleCommand } from '@modules/cycles/interfaces/IFormSendCycleCommand';
+import { IComingData } from '@modules/home/interfaces/IComingData';
+import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
 import HybridImage from '../../images/paralel_hybrid.jpg';
+import RedArrowImg from '../../images/red_arrow.png';
+import BlueArrowImg from '../../images/blue_arrow.png';
 import {
   Container,
   Content,
@@ -31,6 +35,9 @@ import {
   InfoText,
   CurrentStatusContainer,
   ImageContainer,
+  RedArrow,
+  BlueArrow,
+  VehicleImg,
 } from './styles';
 
 const Cycles: React.FC = () => {
@@ -49,11 +56,24 @@ const Cycles: React.FC = () => {
     CycleCommandEnum.cycle_stop
   );
 
+  const [ws, setWs] = useState<WebSocket | null>(null);
+
   const [cycleData, setCycleData] = useState<ICycle[]>([]);
 
-  const [lastRequestTime, setLastRequestTime] = useState(0);
+  const [comingData, setComingData] = useState<IComingData>({
+    message: '-',
+    state: {
+      cardanSpeed: '-',
+      motorSpeed: '-',
+      motorState: '-',
+      regenerationState: '-',
+      vehicleSpeed: '-',
+      vehicleAcceleration: '-',
+      totalTime: '-',
+    },
+    chart: [],
+  });
 
-  const { addToast } = useToast();
   const { SendCycleCommand } = useCycle();
 
   const readFile = useCallback(async (url: string) => {
@@ -87,58 +107,48 @@ const Cycles: React.FC = () => {
   }, [readFile, selectedCycle]);
 
   const onSubmit = useCallback(async () => {
-    const now = Date.now();
-    const delay = 2000; // 2 segundos de delay entre requisições
-
-    // Se ainda não passou tempo suficiente desde a última requisição
-    if (now - lastRequestTime < delay) {
-      addToast({
-        title: 'Aguarde',
-        description: `Por favor, espere ${
-          delay / 1000
-        } segundos entre os comandos`,
-        type: 'warning',
-      });
-      return;
-    }
-
     const dataToSend: IFormSendCycleCommand = {
       cmd: cycleCommand,
       cycle: selectedCycle,
     };
 
-    setLastRequestTime(now);
     SendCycleCommand(dataToSend);
 
     setLastCycleCommand(cycleCommand);
 
     if (cycleCommand === CycleCommandEnum.cycle_start) {
-      const ws = new WebSocket('ws://localhost:8080');
+      const socket = new WebSocket('ws://localhost:8080');
 
-      ws.onmessage = (event) => {
-        const newComingData = JSON.parse(event.data);
+      socket.onmessage = (event) => {
+        const newComingData: IComingData = JSON.parse(event.data);
 
-        console.log(newComingData);
+        setComingData(newComingData);
       };
-    } else {
-      console.log({
+
+      setWs(socket);
+    }
+
+    if (cycleCommand === CycleCommandEnum.cycle_stop) {
+      if (ws) {
+        ws.close();
+        setWs(null);
+      }
+
+      setComingData({
         message: '-',
         state: {
           cardanSpeed: '-',
           motorSpeed: '-',
-          delay: '-',
-          stepperMotorState: '-',
+          motorState: '-',
+          regenerationState: '-',
+          vehicleSpeed: '-',
+          vehicleAcceleration: '-',
+          totalTime: '-',
         },
         chart: [],
       });
     }
-  }, [
-    SendCycleCommand,
-    addToast,
-    cycleCommand,
-    lastRequestTime,
-    selectedCycle,
-  ]);
+  }, [SendCycleCommand, cycleCommand, selectedCycle, ws]);
 
   return (
     <Container>
@@ -156,8 +166,15 @@ const Cycles: React.FC = () => {
                 <RadioButtonContainer>
                   <ButtonLabel>HFET</ButtonLabel>
                   <RadioButton
-                    onClick={() => setSelectedCycle(CyclesEnum.HFET)}
+                    onClick={() => {
+                      if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
+                        setSelectedCycle(CyclesEnum.HFET);
+                      }
+                    }}
                     selected={!!(selectedCycle === CyclesEnum.HFET)}
+                    disabled={
+                      !!(lastCycleCommand === CycleCommandEnum.cycle_start)
+                    }
                   >
                     <div />
                   </RadioButton>
@@ -165,8 +182,15 @@ const Cycles: React.FC = () => {
                 <RadioButtonContainer>
                   <ButtonLabel>UDDS</ButtonLabel>
                   <RadioButton
-                    onClick={() => setSelectedCycle(CyclesEnum.UDDS)}
+                    onClick={() => {
+                      if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
+                        setSelectedCycle(CyclesEnum.UDDS);
+                      }
+                    }}
                     selected={!!(selectedCycle === CyclesEnum.UDDS)}
+                    disabled={
+                      !!(lastCycleCommand === CycleCommandEnum.cycle_start)
+                    }
                   >
                     <div />
                   </RadioButton>
@@ -211,44 +235,82 @@ const Cycles: React.FC = () => {
             <CurrentStatusContainer>
               <InfoContainer>
                 <InfoTitle>Status do ciclo</InfoTitle>
-                <MessageComponent message="Teste" />
+
                 <Info>
                   <InfoLabel>Velocidade do veículo</InfoLabel>
-                  <InfoText>45 km/h</InfoText>
+                  <InfoText>
+                    {comingData?.state.vehicleSpeed || '-'} km/h
+                  </InfoText>
+                </Info>
+                <Info>
+                  <InfoLabel>Aceleração do veículo</InfoLabel>
+                  <InfoText>
+                    {comingData?.state.vehicleAcceleration || '-'} m/s²
+                  </InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Rotação do cardan:</InfoLabel>
-                  <InfoText>1200 rpm</InfoText>
+                  <InfoText>
+                    {comingData?.state.cardanSpeed || '-'} rpm
+                  </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Tempo</InfoLabel>
-                  <InfoText>2 s</InfoText>
+                  <InfoLabel>Tempo total</InfoLabel>
+                  <InfoText>{comingData?.state.totalTime || '-'} s</InfoText>
                 </Info>
               </InfoContainer>
               <InfoContainer>
                 <InfoTitle>Condição atual</InfoTitle>
-
+                <MessageComponent message={comingData?.message || '-'} />
                 <Info>
                   <InfoLabel>Motor elétrico:</InfoLabel>
-                  <InfoText color={themeDefaults.colors.greenButtonColor}>
-                    Ativado
+                  <InfoText
+                    color={
+                      comingData.state?.motorState === OnOffStateEnum.ON
+                        ? themeDefaults.colors.greenButtonColor
+                        : themeDefaults.colors.danger
+                    }
+                  >
+                    {comingData.state?.motorState === OnOffStateEnum.ON
+                      ? 'Ativado'
+                      : 'Desativado'}
                   </InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Rotação do motor elétrico:</InfoLabel>
-                  <InfoText>1200 rpm</InfoText>
+                  <InfoText>{comingData?.state.motorSpeed || '-'} rpm</InfoText>
                 </Info>
 
                 <Info>
                   <InfoLabel>Regeneração:</InfoLabel>
-                  <InfoText color={themeDefaults.colors.greenButtonColor}>
-                    Ativada
+                  <InfoText
+                    color={
+                      comingData.state?.regenerationState === OnOffStateEnum.ON
+                        ? themeDefaults.colors.greenButtonColor
+                        : themeDefaults.colors.danger
+                    }
+                  >
+                    {comingData.state?.regenerationState === OnOffStateEnum.ON
+                      ? 'Ativada'
+                      : 'Desativada'}
                   </InfoText>
                 </Info>
               </InfoContainer>
             </CurrentStatusContainer>
             <ImageContainer>
-              <img src={HybridImage} alt="Hybrid" />
+              <VehicleImg src={HybridImage} alt="Hybrid" />
+              <RedArrow
+                src={RedArrowImg}
+                alt="redArrow"
+                visible={!!(comingData?.state.motorState === OnOffStateEnum.ON)}
+              />
+              <BlueArrow
+                src={BlueArrowImg}
+                alt="blueArrow"
+                visible={
+                  !!(comingData?.state.regenerationState === OnOffStateEnum.ON)
+                }
+              />
             </ImageContainer>
           </div>
         </RightContainer>
