@@ -74,6 +74,11 @@ const Cycles: React.FC = () => {
     chart: [],
   });
 
+  const [regenStartTime, setRegenStartTime] = useState<number | null>(null);
+  const [regenCurrentTime, setRegenCurrentTime] = useState<number>(0);
+  const [allRegenTimes, setAllRegenTimes] = useState<number[]>([]);
+  const [averageRegenInterval, setAverageRegenInterval] = useState('');
+
   const { SendCycleCommand } = useCycle();
 
   const readFile = useCallback(async (url: string) => {
@@ -112,7 +117,34 @@ const Cycles: React.FC = () => {
       cycle: selectedCycle,
     };
 
-    SendCycleCommand(dataToSend);
+    SendCycleCommand(dataToSend).then(() => {
+      if (allRegenTimes.length > 0) {
+        const soma = allRegenTimes.reduce((acc, val) => acc + val, 0);
+        const media = soma / allRegenTimes.length;
+        setAverageRegenInterval(media.toFixed(1));
+      }
+
+      if (ws) {
+        ws.close();
+        setWs(null);
+      }
+
+      setComingData({
+        message: '-',
+        state: {
+          cardanSpeed: '-',
+          motorSpeed: '-',
+          motorState: '-',
+          regenerationState: '-',
+          vehicleSpeed: '-',
+          vehicleAcceleration: '-',
+          totalTime: '-',
+        },
+        chart: [],
+      });
+
+      setLastCycleCommand(CycleCommandEnum.cycle_stop);
+    });
 
     setLastCycleCommand(cycleCommand);
 
@@ -148,7 +180,36 @@ const Cycles: React.FC = () => {
         chart: [],
       });
     }
-  }, [SendCycleCommand, cycleCommand, selectedCycle, ws]);
+  }, [SendCycleCommand, allRegenTimes, cycleCommand, selectedCycle, ws]);
+
+  useEffect(() => {
+    if (!comingData) return;
+
+    const { regenerationState, totalTime } = comingData.state;
+
+    if (regenerationState === OnOffStateEnum.ON) {
+      // se acabou de entrar em "on", salva o tempo de início
+      if (regenStartTime === null) {
+        setRegenStartTime(Number(totalTime));
+        setRegenCurrentTime(0);
+      } else {
+        // atualiza tempo atual
+        setRegenCurrentTime(Number(totalTime) - regenStartTime);
+      }
+    } else {
+      // se estiver "off", zera o contador
+
+      if (regenCurrentTime > 0) {
+        setAllRegenTimes((prev) => {
+          const newValues = [...prev];
+          newValues.push(regenCurrentTime);
+          return newValues;
+        });
+      }
+      setRegenStartTime(null);
+      setRegenCurrentTime(0);
+    }
+  }, [allRegenTimes, comingData, regenCurrentTime, regenStartTime]);
 
   return (
     <Container>
@@ -282,7 +343,10 @@ const Cycles: React.FC = () => {
                 </Info>
 
                 <Info>
-                  <InfoLabel>Regeneração:</InfoLabel>
+                  <InfoLabel>
+                    Regeneração ({regenCurrentTime} s) (media:{' '}
+                    {averageRegenInterval} s):
+                  </InfoLabel>
                   <InfoText
                     color={
                       comingData.state?.regenerationState === OnOffStateEnum.ON
