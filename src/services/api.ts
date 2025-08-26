@@ -10,4 +10,5 @@ export const apiRoutes = {
   users: '/users',
   serialCommand: '/serial/command',
   serialCycleCommand: '/serial/cycle/command',
+  serialCarlaCommand: '/serial/carla/command',
 };

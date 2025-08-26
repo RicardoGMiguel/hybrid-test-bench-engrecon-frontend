@@ -31,9 +31,26 @@ export const Content = styled.div`
 `;
 
 export const LeftContainer = styled.div`
-  width: 30%;
+  width: 40%;
   height: 100%;
   padding: 1rem;
+
+  > div {
+    width: 100%;
+    height: 100%;
+    background: ${({ theme }) => theme.colors.lightGray};
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+export const RightContainer = styled.div`
+  width: 60%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
 
   > div {
     width: 100%;
@@ -45,25 +62,13 @@ export const LeftContainer = styled.div`
   }
 `;
 
-export const RightContainer = styled.div`
-  width: 70%;
-  height: 100%;
-  padding: 1rem;
-
-  > div {
-    width: 100%;
-    height: 100%;
-    background: ${({ theme }) => theme.colors.lightGray};
-    border-radius: 1rem;
-  }
-`;
-
 export const InfoContainer = styled.div`
   width: 100%;
   padding: 2rem;
   padding-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 `;
 
 export const Info = styled.div`
@@ -96,10 +101,11 @@ export const InfoText = styled.h1<{ color?: string }>`
     `}
 `;
 
-export const CouplingModeButtons = styled.div`
+export const CycleSelectionButtons = styled.div`
   width: 100%;
+  gap: 3rem;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
 export const RadioButtonContainer = styled.div`
@@ -112,7 +118,10 @@ export const ButtonLabel = styled.h1`
   color: ${({ theme }) => theme.colors.dt_font};
 `;
 
-export const RadioButton = styled.div<{ selected: boolean }>`
+export const RadioButton = styled.div<{
+  selected: boolean;
+  disabled?: boolean;
+}>`
   width: 1.4rem;
   height: 1.4rem;
   border-radius: 0.7rem;
@@ -121,6 +130,12 @@ export const RadioButton = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      cursor: not-allowed;
+    `}
 
   > div {
     width: 70%;
@@ -143,4 +158,57 @@ export const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   gap: 2rem;
+`;
+
+export const CurrentStatusContainer = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+export const ImageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+`;
+
+export const VehicleImg = styled.img`
+  height: 100%;
+`;
+
+export const RedArrow = styled.img<{ visible: boolean }>`
+  position: absolute;
+  top: 50.5%;
+  left: 60%;
+  height: 20%;
+  width: 10%;
+  display: flex;
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      display: none;
+    `}
+`;
+
+export const BlueArrow = styled.img<{ visible: boolean }>`
+  position: absolute;
+  top: 50.5%;
+  left: 45%;
+  height: 20%;
+  width: 10%;
+  display: flex;
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      display: none;
+    `}
+`;
+
+export const CarlaLogo = styled.img`
+  width: 70%;
 `;

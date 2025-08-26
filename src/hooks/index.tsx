@@ -8,6 +8,7 @@ import { AuthProvider } from '@modules/auth/hooks/auth';
 import { UserProvider } from '@modules/users/hooks/index';
 import { HomeProvider } from '@modules/home/hooks/index';
 import { CycleProvider } from '@modules/cycles/hooks/index';
+import { CarlaProvider } from '@modules/carla/hooks/index';
 
 import { ToastProvider } from './toast';
 import { ChakraProvider } from './ChakraProvider';
@@ -29,7 +30,9 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
           <AuthProvider>
             <UserProvider>
               <HomeProvider>
-                <CycleProvider>{children}</CycleProvider>
+                <CycleProvider>
+                  <CarlaProvider>{children}</CarlaProvider>
+                </CycleProvider>
               </HomeProvider>
             </UserProvider>
           </AuthProvider>

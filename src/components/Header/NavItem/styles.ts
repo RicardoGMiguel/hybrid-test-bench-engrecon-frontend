@@ -12,6 +12,7 @@ export const Container = styled(Link)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  width: fit-content;
 
   :hover {
     filter: ${({ theme }) => theme.filters.hover};
