@@ -21,6 +21,25 @@ export const Header = styled.div`
   }
 `;
 
+export const ModeSelectionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const ModeSelectionButton = styled.h1<{ selected: boolean }>`
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+
+  ${({ selected }) =>
+    !selected &&
+    css`
+      color: #ccc;
+    `}
+`;
+
 export const Content = styled.div`
   width: 100%;
   height: 92%;
@@ -148,12 +167,6 @@ export const ButtonsContainer = styled.div`
   gap: 2rem;
 `;
 
-export const FakeChart = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: gray;
-`;
-
 export const ConfigTestChartContainer = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 0;
@@ -162,6 +175,7 @@ export const ConfigTestChartContainer = styled.div<{ isOpen: boolean }>`
   height: 600px;
   background-color: #fafbfc;
   border-radius: 20px;
+  z-index: 10;
 
   box-shadow: 4px 5px 5px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: 4px 5px 5px 0px rgba(0, 0, 0, 0.75);

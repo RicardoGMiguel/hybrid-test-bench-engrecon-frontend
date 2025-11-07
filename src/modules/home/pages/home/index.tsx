@@ -1,6 +1,7 @@
 import Title from '@components/Title';
 import { useForm } from 'react-hook-form';
 import {
+  Box,
   FormControl,
   FormErrorMessage,
   Grid,
@@ -13,7 +14,7 @@ import { useToast } from '@hooks/toast';
 import { CouplingModesEnum } from '@modules/home/enums/couplingModes.enum';
 import SettingsInput from '@components/Form/SettingsInput';
 import Button from '@components/Button';
-import Oscilloscope from '@modules/home/components/oscilloscope';
+
 import MessageComponent from '@modules/home/components/MessageComponent';
 import themeDefaults from '@style/themeDefaults';
 import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
@@ -22,11 +23,15 @@ import { IComingData } from '@modules/home/interfaces/IComingData';
 import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
 import { IOscilloscopeProps } from '@modules/home/interfaces/IOscilloscopeProps';
 import TestChart from '@modules/home/components/testChart';
+import ResultsChart from '@modules/home/components/resultsChart';
+import Oscilloscope from '@modules/home/components/oscilloscope';
 import { useHome } from '../../hooks/index';
 import {
   Container,
   Content,
   Header,
+  ModeSelectionContainer,
+  ModeSelectionButton,
   LeftContainer,
   RightContainer,
   InfoContainer,
@@ -47,7 +52,7 @@ import {
 } from './editSettingsForm.zod';
 
 const Home: React.FC = () => {
-  const phaseShift = 0.001;
+  const phaseShift = 0.0008;
 
   const staticData: IOscilloscopeProps[] = [
     {
@@ -92,6 +97,109 @@ const Home: React.FC = () => {
         { x: 1, y: 3 },
         { x: 5, y: 4 },
         { x: 7, y: 4 },
+      ],
+    },
+  ];
+
+  const staticSpeedResults: IOscilloscopeProps[] = [
+    {
+      id: 'Cardan',
+      color: 'hsl(240, 70%, 50%)',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 1500 },
+        { x: 11, y: 1700 },
+      ],
+    },
+    {
+      id: 'Coroa',
+      color: 'hsl(0, 70%, 50%)',
+
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 3.5, y: 200 },
+        { x: 4, y: 800 },
+        { x: 4.5, y: 1400 },
+        { x: 4.6, y: 1500 },
+        { x: 4.7, y: 1570 },
+        { x: 11, y: 1700 },
+      ],
+    },
+  ];
+
+  const staticSpeedDiffResults: IOscilloscopeProps[] = [
+    {
+      id: 'Difer.',
+      color: '#000',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 1500 },
+        { x: 2, y: 1510 },
+        { x: 3, y: 1520 },
+        { x: 3.5, y: 1320 },
+        { x: 4, y: 600 },
+        { x: 4.5, y: 150 },
+        { x: 4.6, y: 50 },
+        { x: 4.7, y: 20 },
+        { x: 11, y: 0 },
+      ],
+    },
+  ];
+
+  const staticSleevePositionDiffResults: IOscilloscopeProps[] = [
+    {
+      id: 'Vel.',
+      color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+        { x: 5.2, y: 0.1 },
+        { x: 5.4, y: 0.2 },
+        { x: 5.6, y: 0.4 },
+        { x: 5.8, y: 1.6 },
+        { x: 6, y: 3 },
+        { x: 6.2, y: 5 },
+        { x: 6.4, y: 6.4 },
+        { x: 6.6, y: 7.6 },
+        { x: 6.8, y: 7.8 },
+        { x: 7, y: 8 },
+        { x: 8, y: 8 },
+        { x: 9, y: 8 },
+        { x: 10, y: 8 },
+        { x: 11, y: 8 },
+      ],
+    },
+  ];
+
+  const staticSleeveSpeedDiffResults: IOscilloscopeProps[] = [
+    {
+      id: 'Vel.',
+      color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+        { x: 6, y: 15 },
+        { x: 7, y: 0 },
+        { x: 8, y: 0 },
+        { x: 9, y: 0 },
+        { x: 10, y: 0 },
+        { x: 11, y: 0 },
       ],
     },
   ];
@@ -229,12 +337,27 @@ const Home: React.FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [showResults, setShowResults] = useState(false);
+
   return (
     <Container>
       <Header>
         <div>
           <Title value="Teste de acoplamento" />
-          <h1>Teste em tempo real</h1>
+          <ModeSelectionContainer>
+            <ModeSelectionButton
+              selected={!showResults}
+              onClick={() => setShowResults(false)}
+            >
+              Sensores
+            </ModeSelectionButton>
+            <ModeSelectionButton
+              selected={showResults}
+              onClick={() => setShowResults(true)}
+            >
+              Resultados
+            </ModeSelectionButton>
+          </ModeSelectionContainer>
         </div>
       </Header>
       <Content>
@@ -425,21 +548,65 @@ const Home: React.FC = () => {
         <RightContainer>
           <div>
             {/* <Oscilloscope chartData={comingData.chart} /> */}
-            {/* <Oscilloscope chartData={staticData} /> */}
-            <Grid gap={6}>
-              <GridItem rowSpan={1} colSpan={1}>
-                <Oscilloscope chartData={staticData} />
-              </GridItem>
-              <GridItem rowSpan={1} colSpan={1}>
-                <Oscilloscope chartData={staticData} />
-              </GridItem>
-              <GridItem rowSpan={1} colSpan={1}>
-                <Oscilloscope chartData={staticData} />
-              </GridItem>
-              <GridItem rowSpan={1} colSpan={1}>
-                <Oscilloscope chartData={staticData} />
-              </GridItem>
-            </Grid>
+            {!showResults ? (
+              <Oscilloscope chartData={staticData} />
+            ) : (
+              <Grid
+                gap={6}
+                templateColumns="repeat(2, 1fr)"
+                templateRows="repeat(2, 1fr)"
+                h="100%"
+              >
+                <GridItem>
+                  <Box height="100%">
+                    <ResultsChart
+                      title="Velocidades de cardan e coroa"
+                      axisLeftLegend="Velocidade {RPM)"
+                      chartData={staticSpeedResults}
+                      couplingCommandInstant={3}
+                      startCoupling={5}
+                      endCoupling={7}
+                    />
+                  </Box>
+                </GridItem>
+                <GridItem>
+                  <Box height="100%">
+                    <ResultsChart
+                      title="Diferença angular"
+                      axisLeftLegend="Velocidade {RPM)"
+                      chartData={staticSpeedDiffResults}
+                      couplingCommandInstant={3}
+                      startCoupling={5}
+                      endCoupling={7}
+                    />
+                  </Box>
+                </GridItem>
+                <GridItem>
+                  <Box height="100%">
+                    <ResultsChart
+                      title="Posição da luva"
+                      axisLeftLegend="Posição {mm)"
+                      chartData={staticSleevePositionDiffResults}
+                      couplingCommandInstant={3}
+                      startCoupling={5}
+                      endCoupling={7}
+                    />
+                  </Box>
+                </GridItem>
+                <GridItem>
+                  <Box height="100%">
+                    <ResultsChart
+                      title="Velocidade da Luva"
+                      axisLeftLegend="Velocidade {m/s)"
+                      chartData={staticSleeveSpeedDiffResults}
+                      couplingCommandInstant={3}
+                      startCoupling={5}
+                      endCoupling={7}
+                    />
+                  </Box>
+                </GridItem>
+              </Grid>
+            )}
           </div>
         </RightContainer>
       </Content>
