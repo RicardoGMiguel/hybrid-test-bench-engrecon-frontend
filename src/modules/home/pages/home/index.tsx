@@ -1,6 +1,12 @@
 import Title from '@components/Title';
 import { useForm } from 'react-hook-form';
-import { FormControl, FormErrorMessage } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormErrorMessage,
+  Grid,
+  GridItem,
+  useDisclosure,
+} from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@hooks/toast';
 
@@ -14,6 +20,8 @@ import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
 import { CommandEnum } from '@modules/home/enums/comman.enum';
 import { IComingData } from '@modules/home/interfaces/IComingData';
 import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
+import { IOscilloscopeProps } from '@modules/home/interfaces/IOscilloscopeProps';
+import TestChart from '@modules/home/components/testChart';
 import { useHome } from '../../hooks/index';
 import {
   Container,
@@ -31,6 +39,7 @@ import {
   ButtonLabel,
   RadioButton,
   ButtonsContainer,
+  ConfigTestChartContainer,
 } from './styles';
 import {
   EditSettingsFormData,
@@ -38,12 +47,66 @@ import {
 } from './editSettingsForm.zod';
 
 const Home: React.FC = () => {
+  const phaseShift = 0.001;
+
+  const staticData: IOscilloscopeProps[] = [
+    {
+      id: 'Signal 1',
+      color: 'hsl(0, 70%, 50%)',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0.01, y: 1 },
+        { x: 0.02, y: 0 },
+        { x: 0.03, y: 1 },
+        { x: 0.04, y: 0 },
+        { x: 0.05, y: 1 },
+        { x: 0.06, y: 0 },
+        { x: 0.07, y: 1 },
+        { x: 0.08, y: 0 },
+      ],
+    },
+    {
+      id: 'Signal 2',
+      color: 'hsl(240, 70%, 50%)',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0.01 + phaseShift, y: 1 },
+        { x: 0.02 + phaseShift, y: 0 },
+        { x: 0.03 + phaseShift, y: 1 },
+        { x: 0.04 + phaseShift, y: 0 },
+        { x: 0.05 + phaseShift, y: 1 },
+        { x: 0.06 + phaseShift, y: 0 },
+        { x: 0.07 + phaseShift, y: 1 },
+        { x: 0.08 + phaseShift, y: 0 },
+      ],
+    },
+  ];
+
+  const initialTestChartData: IOscilloscopeProps[] = [
+    {
+      id: 'Perfil de velocidade',
+      color: 'blue',
+      data: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 3 },
+        { x: 5, y: 4 },
+        { x: 7, y: 4 },
+      ],
+    },
+  ];
+
   useEffect(() => {
     document.title = 'Hybrid Test | Home';
   }, []);
 
   const { addToast } = useToast();
   const { SendCommand } = useHome();
+
+  const [testChartData, setTestChartData] =
+    useState<IOscilloscopeProps[]>(initialTestChartData);
+
+  const [verticalLine, setVerticalLine] = useState(0);
 
   const [couplingMode, setCouplingMode] = useState<CouplingModesEnum>(
     CouplingModesEnum.FREE
@@ -68,10 +131,43 @@ const Home: React.FC = () => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
+    watch,
   } = useForm<EditSettingsFormData>({
     resolver: editSettingsFormResolver,
     mode: 'all',
   });
+
+  const watchInitialSpeed = watch('initialSpeed');
+  const watchEndSpeed = watch('endSpeed');
+  const watchRampTime = watch('rampTime');
+  const watchCouplingInstant = watch('couplingInstant');
+
+  useEffect(() => {
+    const currentTestData = [...testChartData];
+    currentTestData[0].data[0].x = 0;
+    currentTestData[0].data[0].y = 0;
+
+    currentTestData[0].data[1].x = 0;
+    currentTestData[0].data[1].y = 0;
+
+    currentTestData[0].data[2].x = 1;
+    currentTestData[0].data[2].y = Number(watchInitialSpeed);
+
+    currentTestData[0].data[3].x = 1 + Number(watchRampTime);
+    currentTestData[0].data[3].y = Number(watchEndSpeed);
+
+    currentTestData[0].data[4].x = 3 + Number(watchRampTime);
+    currentTestData[0].data[4].y = Number(watchEndSpeed);
+
+    setTestChartData(currentTestData);
+    setVerticalLine(Number(watchCouplingInstant));
+  }, [
+    testChartData,
+    watchCouplingInstant,
+    watchEndSpeed,
+    watchInitialSpeed,
+    watchRampTime,
+  ]);
 
   const onSubmit = useCallback(
     async (data: EditSettingsFormData) => {
@@ -95,7 +191,7 @@ const Home: React.FC = () => {
         const dataToSend: IFormSendCommand = {
           cmd: command,
           mode: couplingMode,
-          cardanSpeed: data.cardanSpeed,
+          cardanSpeed: data.initialSpeed,
           rampTime: data.rampTime,
         };
 
@@ -131,11 +227,14 @@ const Home: React.FC = () => {
     [SendCommand, addToast, command, couplingMode, lastRequestTime]
   );
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Container>
       <Header>
         <div>
           <Title value="Teste de acoplamento" />
+          <h1>Teste em tempo real</h1>
         </div>
       </Header>
       <Content>
@@ -143,21 +242,48 @@ const Home: React.FC = () => {
           <div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <InfoContainer>
+                <ConfigTestChartContainer isOpen={isOpen}>
+                  <TestChart
+                    chartData={testChartData}
+                    couplingVerticalLine={verticalLine}
+                  />
+                </ConfigTestChartContainer>
                 <InfoTitle>Configuração do teste</InfoTitle>
                 <Info>
-                  <FormControl isInvalid={!!errors.cardanSpeed}>
+                  <FormControl isInvalid={!!errors.initialSpeed}>
                     <SettingsInput
-                      label="Velocidade do eixo-cardan (rpm)"
+                      label="Velocidade inicial do eixo-cardan (rpm)"
                       register={register}
-                      name="cardanSpeed"
-                      state={getFieldState('cardanSpeed')}
-                      errors={errors.cardanSpeed}
+                      name="initialSpeed"
+                      state={getFieldState('initialSpeed')}
+                      errors={errors.initialSpeed}
                       type="number"
                       min={0}
                       max={3600}
+                      onFocusCapture={() => onOpen()}
+                      onBlurCapture={() => onClose()}
                     />
                     <FormErrorMessage>
-                      {errors.cardanSpeed?.message}
+                      {errors.initialSpeed?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                </Info>
+                <Info>
+                  <FormControl isInvalid={!!errors.endSpeed}>
+                    <SettingsInput
+                      label="Velocidade final do eixo-cardan (rpm)"
+                      register={register}
+                      name="endSpeed"
+                      state={getFieldState('endSpeed')}
+                      errors={errors.endSpeed}
+                      type="number"
+                      min={0}
+                      max={3600}
+                      onFocusCapture={() => onOpen()}
+                      onBlurCapture={() => onClose()}
+                    />
+                    <FormErrorMessage>
+                      {errors.endSpeed?.message}
                     </FormErrorMessage>
                   </FormControl>
                 </Info>
@@ -172,9 +298,30 @@ const Home: React.FC = () => {
                       type="number"
                       min={0}
                       max={120}
+                      onFocusCapture={() => onOpen()}
+                      onBlurCapture={() => onClose()}
                     />
                     <FormErrorMessage>
                       {errors.rampTime?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                </Info>
+                <Info>
+                  <FormControl isInvalid={!!errors.couplingInstant}>
+                    <SettingsInput
+                      label="Instante de acoplamento (segundos)"
+                      register={register}
+                      name="couplingInstant"
+                      state={getFieldState('couplingInstant')}
+                      errors={errors.couplingInstant}
+                      type="number"
+                      min={0}
+                      max={120}
+                      onFocusCapture={() => onOpen()}
+                      onBlurCapture={() => onClose()}
+                    />
+                    <FormErrorMessage>
+                      {errors.couplingInstant?.message}
                     </FormErrorMessage>
                   </FormControl>
                 </Info>
@@ -245,7 +392,7 @@ const Home: React.FC = () => {
               </InfoContainer>
               <ButtonsContainer>
                 <Button
-                  label="Acoplar"
+                  label="Iniciar"
                   size="lg"
                   type="button"
                   onClick={() => {
@@ -254,7 +401,7 @@ const Home: React.FC = () => {
                   selected={!!(command === CommandEnum.start)}
                 />
                 <Button
-                  label="Desacoplar"
+                  label="Parar"
                   size="lg"
                   type="button"
                   onClick={() => {
@@ -277,7 +424,22 @@ const Home: React.FC = () => {
         </LeftContainer>
         <RightContainer>
           <div>
-            <Oscilloscope chartData={comingData.chart} />
+            {/* <Oscilloscope chartData={comingData.chart} /> */}
+            {/* <Oscilloscope chartData={staticData} /> */}
+            <Grid gap={6}>
+              <GridItem rowSpan={1} colSpan={1}>
+                <Oscilloscope chartData={staticData} />
+              </GridItem>
+              <GridItem rowSpan={1} colSpan={1}>
+                <Oscilloscope chartData={staticData} />
+              </GridItem>
+              <GridItem rowSpan={1} colSpan={1}>
+                <Oscilloscope chartData={staticData} />
+              </GridItem>
+              <GridItem rowSpan={1} colSpan={1}>
+                <Oscilloscope chartData={staticData} />
+              </GridItem>
+            </Grid>
           </div>
         </RightContainer>
       </Content>

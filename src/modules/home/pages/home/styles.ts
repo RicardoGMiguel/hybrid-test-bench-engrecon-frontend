@@ -42,6 +42,7 @@ export const LeftContainer = styled.div`
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
+    padding: 2rem;
   }
 `;
 
@@ -60,10 +61,10 @@ export const RightContainer = styled.div`
 
 export const InfoContainer = styled.div`
   width: 100%;
-  padding: 2rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 export const Info = styled.div`
@@ -139,8 +140,35 @@ export const RadioButton = styled.div<{ selected: boolean }>`
 export const ButtonsContainer = styled.div`
   width: 100%;
   padding: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
   gap: 2rem;
+`;
+
+export const FakeChart = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: gray;
+`;
+
+export const ConfigTestChartContainer = styled.div<{ isOpen: boolean }>`
+  position: absolute;
+  top: 0;
+  left: calc(100% + 80px);
+  width: 800px;
+  height: 600px;
+  background-color: #fafbfc;
+  border-radius: 20px;
+
+  box-shadow: 4px 5px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 4px 5px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 4px 5px 5px 0px rgba(0, 0, 0, 0.75);
+  ${({ isOpen }) =>
+    !isOpen &&
+    css`
+      display: none;
+    `}
 `;
