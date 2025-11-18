@@ -6,16 +6,9 @@ import { Container } from './styles';
 interface ChartProps {
   chartData: ICycle[];
   currentTime?: number;
-  firstMarker?: number;
-  secondMarker?: number;
 }
 
-const CycleChart: React.FC<ChartProps> = ({
-  chartData,
-  currentTime,
-  firstMarker,
-  secondMarker,
-}) => (
+const CycleChart: React.FC<ChartProps> = ({ chartData, currentTime }) => (
   <Container>
     <ResponsiveLine
       data={[
@@ -83,57 +76,19 @@ const CycleChart: React.FC<ChartProps> = ({
         },
       ]}
       colors={{ scheme: 'category10' }}
-      markers={
-        !firstMarker && !secondMarker
-          ? [
-              {
-                axis: 'x', // pode ser 'x' ou 'y'
-                value: currentTime || 0, // posição
-                lineStyle: {
-                  stroke: '#f00',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
-                },
-                legend: '',
-                legendOrientation: 'vertical',
-              },
-            ]
-          : [
-              {
-                axis: 'x', // pode ser 'x' ou 'y'
-                value: currentTime || 0, // posição
-                lineStyle: {
-                  stroke: '#f00',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
-                },
-                legend: '',
-                legendOrientation: 'vertical',
-              },
-              {
-                axis: 'x', // pode ser 'x' ou 'y'
-                value: firstMarker || 0, // posição
-                lineStyle: {
-                  stroke: '#1707ff',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
-                },
-                legend: '',
-                legendOrientation: 'vertical',
-              },
-              {
-                axis: 'x', // pode ser 'x' ou 'y'
-                value: secondMarker || 0, // posição
-                lineStyle: {
-                  stroke: '#1707ff',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
-                },
-                legend: '',
-                legendOrientation: 'vertical',
-              },
-            ]
-      }
+      markers={[
+        {
+          axis: 'x', // pode ser 'x' ou 'y'
+          value: currentTime || 0, // posição
+          lineStyle: {
+            stroke: '#f00',
+            strokeWidth: 2,
+            strokeDasharray: '6, 6',
+          },
+          legend: '',
+          legendOrientation: 'vertical',
+        },
+      ]}
     />
   </Container>
 );

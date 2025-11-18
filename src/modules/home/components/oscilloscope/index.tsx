@@ -105,14 +105,14 @@ const OscilloscopeNivo: React.FC<ChartProps> = ({ chartData }) => (
     <ResponsiveLine
       data={chartData}
       margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
-      xScale={{ type: 'linear', min: 'auto', max: 'auto' }}
-      yScale={{ type: 'linear', min: -0.2, max: 1.2 }} // para espaçamento vertical
-      axisBottom={{
-        legend: 'Time (s)',
-        legendOffset: 30,
-        tickSize: 5,
-        tickPadding: 5,
+      xScale={{
+        type: 'linear',
+        min: 'auto',
+        max: 'auto',
+        nice: false,
       }}
+      yScale={{ type: 'linear', min: -0.2, max: 1.2, nice: false }} // para espaçamento vertical
+      axisBottom={null}
       axisLeft={{
         legend: 'Signal',
         legendOffset: -35,
@@ -127,7 +127,7 @@ const OscilloscopeNivo: React.FC<ChartProps> = ({ chartData }) => (
           },
         },
       }}
-      enablePoints
+      enablePoints={false}
       pointSize={6}
       useMesh
       curve="stepAfter"
@@ -146,6 +146,8 @@ const OscilloscopeNivo: React.FC<ChartProps> = ({ chartData }) => (
         },
       ]}
       colors={{ scheme: 'category10' }}
+      animate={false}
+      motionConfig="stiff"
     />
   </Container>
 );

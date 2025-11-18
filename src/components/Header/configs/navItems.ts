@@ -13,9 +13,13 @@ export const navItems = () =>
       label: 'Ciclos',
     },
     {
-      route: PrivatePathsEnum.CARLA,
-      label: 'Carla Simulator',
+      route: PrivatePathsEnum.CYCLES_WITH_SIGNALS,
+      label: 'Ciclos com sinais',
     },
+    // {
+    //   route: PrivatePathsEnum.CARLA,
+    //   label: 'Carla Simulator',
+    // },
     {
       route: PrivatePathsEnum.USERS,
       label: 'Usuários',

@@ -52,40 +52,40 @@ import {
 } from './editSettingsForm.zod';
 
 const Home: React.FC = () => {
-  const phaseShift = 0.0008;
+  // const phaseShift = 0.0008;
 
-  const staticData: IOscilloscopeProps[] = [
-    {
-      id: 'Signal 1',
-      color: 'hsl(0, 70%, 50%)',
-      data: [
-        { x: 0, y: 0 },
-        { x: 0.01, y: 1 },
-        { x: 0.02, y: 0 },
-        { x: 0.03, y: 1 },
-        { x: 0.04, y: 0 },
-        { x: 0.05, y: 1 },
-        { x: 0.06, y: 0 },
-        { x: 0.07, y: 1 },
-        { x: 0.08, y: 0 },
-      ],
-    },
-    {
-      id: 'Signal 2',
-      color: 'hsl(240, 70%, 50%)',
-      data: [
-        { x: 0, y: 0 },
-        { x: 0.01 + phaseShift, y: 1 },
-        { x: 0.02 + phaseShift, y: 0 },
-        { x: 0.03 + phaseShift, y: 1 },
-        { x: 0.04 + phaseShift, y: 0 },
-        { x: 0.05 + phaseShift, y: 1 },
-        { x: 0.06 + phaseShift, y: 0 },
-        { x: 0.07 + phaseShift, y: 1 },
-        { x: 0.08 + phaseShift, y: 0 },
-      ],
-    },
-  ];
+  // const staticData: IOscilloscopeProps[] = [
+  //   {
+  //     id: 'Signal 1',
+  //     color: 'hsl(0, 70%, 50%)',
+  //     data: [
+  //       { x: 0, y: 0 },
+  //       { x: 0.01, y: 1 },
+  //       { x: 0.02, y: 0 },
+  //       { x: 0.03, y: 1 },
+  //       { x: 0.04, y: 0 },
+  //       { x: 0.05, y: 1 },
+  //       { x: 0.06, y: 0 },
+  //       { x: 0.07, y: 1 },
+  //       { x: 0.08, y: 0 },
+  //     ],
+  //   },
+  //   {
+  //     id: 'Signal 2',
+  //     color: 'hsl(240, 70%, 50%)',
+  //     data: [
+  //       { x: 0, y: 0 },
+  //       { x: 0.01 + phaseShift, y: 1 },
+  //       { x: 0.02 + phaseShift, y: 0 },
+  //       { x: 0.03 + phaseShift, y: 1 },
+  //       { x: 0.04 + phaseShift, y: 0 },
+  //       { x: 0.05 + phaseShift, y: 1 },
+  //       { x: 0.06 + phaseShift, y: 0 },
+  //       { x: 0.07 + phaseShift, y: 1 },
+  //       { x: 0.08 + phaseShift, y: 0 },
+  //     ],
+  //   },
+  // ];
 
   const initialTestChartData: IOscilloscopeProps[] = [
     {
@@ -245,9 +245,9 @@ const Home: React.FC = () => {
     mode: 'all',
   });
 
-  const watchInitialSpeed = watch('initialSpeed');
-  const watchEndSpeed = watch('endSpeed');
-  const watchRampTime = watch('rampTime');
+  const watchCardanInitialSpeed = watch('cardanInitialSpeed');
+  const watchCardanEndSpeed = watch('cardanEndSpeed');
+  const watchCardanTestTotalTime = watch('cardanTestTotalTime');
   const watchCouplingInstant = watch('couplingInstant');
 
   useEffect(() => {
@@ -259,22 +259,22 @@ const Home: React.FC = () => {
     currentTestData[0].data[1].y = 0;
 
     currentTestData[0].data[2].x = 1;
-    currentTestData[0].data[2].y = Number(watchInitialSpeed);
+    currentTestData[0].data[2].y = Number(watchCardanInitialSpeed);
 
-    currentTestData[0].data[3].x = 1 + Number(watchRampTime);
-    currentTestData[0].data[3].y = Number(watchEndSpeed);
+    currentTestData[0].data[3].x = 1 + Number(watchCardanTestTotalTime);
+    currentTestData[0].data[3].y = Number(watchCardanEndSpeed);
 
-    currentTestData[0].data[4].x = 3 + Number(watchRampTime);
-    currentTestData[0].data[4].y = Number(watchEndSpeed);
+    currentTestData[0].data[4].x = 3 + Number(watchCardanTestTotalTime);
+    currentTestData[0].data[4].y = Number(watchCardanEndSpeed);
 
     setTestChartData(currentTestData);
-    setVerticalLine(Number(watchCouplingInstant));
+    setVerticalLine(Number(watchCouplingInstant) + 1);
   }, [
     testChartData,
+    watchCardanEndSpeed,
+    watchCardanInitialSpeed,
+    watchCardanTestTotalTime,
     watchCouplingInstant,
-    watchEndSpeed,
-    watchInitialSpeed,
-    watchRampTime,
   ]);
 
   const onSubmit = useCallback(
@@ -299,8 +299,10 @@ const Home: React.FC = () => {
         const dataToSend: IFormSendCommand = {
           cmd: command,
           mode: couplingMode,
-          cardanSpeed: data.initialSpeed,
-          rampTime: data.rampTime,
+          cardanInitialSpeed: data.cardanInitialSpeed,
+          cardanEndSpeed: data.cardanEndSpeed,
+          cardanTestTotalTime: data.cardanTestTotalTime,
+          couplingInstant: data.couplingInstant,
         };
 
         setLastRequestTime(now);
@@ -373,13 +375,13 @@ const Home: React.FC = () => {
                 </ConfigTestChartContainer>
                 <InfoTitle>Configuração do teste</InfoTitle>
                 <Info>
-                  <FormControl isInvalid={!!errors.initialSpeed}>
+                  <FormControl isInvalid={!!errors.cardanInitialSpeed}>
                     <SettingsInput
                       label="Velocidade inicial do eixo-cardan (rpm)"
                       register={register}
-                      name="initialSpeed"
-                      state={getFieldState('initialSpeed')}
-                      errors={errors.initialSpeed}
+                      name="cardanInitialSpeed"
+                      state={getFieldState('cardanInitialSpeed')}
+                      errors={errors.cardanInitialSpeed}
                       type="number"
                       min={0}
                       max={3600}
@@ -387,18 +389,18 @@ const Home: React.FC = () => {
                       onBlurCapture={() => onClose()}
                     />
                     <FormErrorMessage>
-                      {errors.initialSpeed?.message}
+                      {errors.cardanInitialSpeed?.message}
                     </FormErrorMessage>
                   </FormControl>
                 </Info>
                 <Info>
-                  <FormControl isInvalid={!!errors.endSpeed}>
+                  <FormControl isInvalid={!!errors.cardanEndSpeed}>
                     <SettingsInput
                       label="Velocidade final do eixo-cardan (rpm)"
                       register={register}
-                      name="endSpeed"
-                      state={getFieldState('endSpeed')}
-                      errors={errors.endSpeed}
+                      name="cardanEndSpeed"
+                      state={getFieldState('cardanEndSpeed')}
+                      errors={errors.cardanEndSpeed}
                       type="number"
                       min={0}
                       max={3600}
@@ -406,18 +408,18 @@ const Home: React.FC = () => {
                       onBlurCapture={() => onClose()}
                     />
                     <FormErrorMessage>
-                      {errors.endSpeed?.message}
+                      {errors.cardanEndSpeed?.message}
                     </FormErrorMessage>
                   </FormControl>
                 </Info>
                 <Info>
-                  <FormControl isInvalid={!!errors.rampTime}>
+                  <FormControl isInvalid={!!errors.cardanTestTotalTime}>
                     <SettingsInput
                       label="Tempo de rampa (segundos)"
                       register={register}
-                      name="rampTime"
-                      state={getFieldState('rampTime')}
-                      errors={errors.rampTime}
+                      name="cardanTestTotalTime"
+                      state={getFieldState('cardanTestTotalTime')}
+                      errors={errors.cardanTestTotalTime}
                       type="number"
                       min={0}
                       max={120}
@@ -425,7 +427,7 @@ const Home: React.FC = () => {
                       onBlurCapture={() => onClose()}
                     />
                     <FormErrorMessage>
-                      {errors.rampTime?.message}
+                      {errors.cardanTestTotalTime?.message}
                     </FormErrorMessage>
                   </FormControl>
                 </Info>
@@ -547,9 +549,8 @@ const Home: React.FC = () => {
         </LeftContainer>
         <RightContainer>
           <div>
-            {/* <Oscilloscope chartData={comingData.chart} /> */}
             {!showResults ? (
-              <Oscilloscope chartData={staticData} />
+              <Oscilloscope chartData={comingData.chart} />
             ) : (
               <Grid
                 gap={6}

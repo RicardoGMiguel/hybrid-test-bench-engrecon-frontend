@@ -14,9 +14,12 @@ import themeDefaults from '@style/themeDefaults';
 import { IFormSendCycleCommand } from '@modules/cycles/interfaces/IFormSendCycleCommand';
 import { IComingData } from '@modules/home/interfaces/IComingData';
 import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
+import { CycleSegmentEnum } from '@modules/cyclesWithSignals/enums/cycleSegment.enum';
 import HybridImage from '../../images/paralel_hybrid.jpg';
 import RedArrowImg from '../../images/red_arrow.png';
 import BlueArrowImg from '../../images/blue_arrow.png';
+import ThrottleIcon from '../../images/accel_icon.png';
+import BrakeIcon from '../../images/brake_icon.png';
 import {
   Container,
   Content,
@@ -38,11 +41,16 @@ import {
   RedArrow,
   BlueArrow,
   VehicleImg,
+  IconsContainer,
+  Icon,
+  GearIndicator,
+  IconImg,
+  PedalValue,
 } from './styles';
 
-const Cycles: React.FC = () => {
+const CyclesWithSignals: React.FC = () => {
   useEffect(() => {
-    document.title = 'Hybrid Test | Ciclos';
+    document.title = 'Hybrid Test | Ciclos com sinais';
   }, []);
 
   const [selectedCycle, setSelectedCycle] = useState<CyclesEnum>(
@@ -79,6 +87,17 @@ const Cycles: React.FC = () => {
   const [allRegenTimes, setAllRegenTimes] = useState<number[]>([]);
   const [averageRegenInterval, setAverageRegenInterval] = useState('');
 
+  const [currentGear, setCurrentGear] = useState('N');
+
+  const [firstMark, setFirstMark] = useState(0);
+  const [secondMark, setSecondMark] = useState(0);
+
+  const [currentCycleSegment, setcurrentCycleSegment] =
+    useState<CycleSegmentEnum>(CycleSegmentEnum.THROTTLE);
+
+  const [throttlePercent, setThrottlePercent] = useState(0);
+  const [brakePercent, setBrakePercent] = useState(0);
+
   const { SendCycleCommand } = useCycle();
 
   const readFile = useCallback(async (url: string) => {
@@ -108,7 +127,15 @@ const Cycles: React.FC = () => {
   useEffect(() => {
     const newData = readFile(`/staticData/${selectedCycle}.txt`);
 
-    newData.then((result) => setCycleData(result));
+    newData.then((result) => {
+      const cycleTotalDuration = result[result.length - 1].x;
+      const firstMarkDuration = cycleTotalDuration / 3;
+      const secondMarkDuration = cycleTotalDuration / 3;
+
+      setFirstMark(firstMarkDuration);
+      setSecondMark(firstMarkDuration + secondMarkDuration);
+      setCycleData(result);
+    });
   }, [readFile, selectedCycle]);
 
   const onSubmit = useCallback(async () => {
@@ -211,11 +238,107 @@ const Cycles: React.FC = () => {
     }
   }, [allRegenTimes, comingData, regenCurrentTime, regenStartTime]);
 
+  useEffect(() => {
+    if (comingData.state.vehicleSpeed) {
+      const speed = Number(comingData.state.vehicleSpeed);
+
+      if (speed === 0) {
+        setCurrentGear('N');
+      } else if (speed > 0 && speed <= 10) {
+        setCurrentGear('1');
+      } else if (speed > 10 && speed <= 20) {
+        setCurrentGear('2');
+      } else if (speed > 20 && speed <= 30) {
+        setCurrentGear('3');
+      } else if (speed > 30 && speed <= 50) {
+        setCurrentGear('4');
+      } else if (speed > 50 && speed <= 70) {
+        setCurrentGear('5');
+      } else if (speed > 70) {
+        setCurrentGear('6');
+      }
+    }
+  }, [comingData.state.vehicleSpeed]);
+
+  useEffect(() => {
+    if (comingData.state.totalTime) {
+      const totalTime = Number(comingData.state.totalTime);
+
+      if (totalTime <= firstMark) {
+        setcurrentCycleSegment(CycleSegmentEnum.THROTTLE);
+      }
+
+      if (totalTime > firstMark && totalTime <= secondMark) {
+        setcurrentCycleSegment(CycleSegmentEnum.BRAKE);
+      }
+
+      if (totalTime > secondMark) {
+        setcurrentCycleSegment(CycleSegmentEnum.GRADIENT);
+      }
+    }
+  }, [comingData.state.totalTime, firstMark, secondMark]);
+
+  useEffect(() => {
+    setThrottlePercent(0);
+    setBrakePercent(0);
+
+    if (comingData.state.vehicleAcceleration) {
+      const acceleration = Number(comingData.state.vehicleAcceleration);
+
+      if (currentCycleSegment === CycleSegmentEnum.THROTTLE) {
+        const percent = Number((acceleration * 0.5 * 100).toFixed(0));
+
+        if (acceleration > 0) {
+          // acelerações positivas são geradas pelo pedal do acelerador, negativas por freio motor
+          const formattedPercent = percent > 100 ? 100 : percent;
+          setThrottlePercent(formattedPercent);
+          setBrakePercent(0);
+        }
+
+        if (acceleration < 0) {
+          setThrottlePercent(0);
+        }
+      }
+
+      if (currentCycleSegment === CycleSegmentEnum.BRAKE) {
+        const percent = Number((acceleration * 0.5 * 100).toFixed(0));
+
+        if (acceleration > 0) {
+          // acelerações positivas são geradas pelo pedal de acelerador
+          const formattedPercent = percent > 100 ? 100 : percent;
+          setThrottlePercent(formattedPercent);
+          setBrakePercent(0);
+        }
+        if (acceleration < 0) {
+          // acelerações negativas por pedal do freio
+          const formattedPercent = percent < -100 ? -100 : percent;
+          setThrottlePercent(0);
+          setBrakePercent(-formattedPercent);
+        }
+      }
+
+      if (currentCycleSegment === CycleSegmentEnum.GRADIENT) {
+        const percent = Number((acceleration * 0.5 * 100).toFixed(0));
+
+        if (acceleration < 0) {
+          // acelerações positivas são geradas por descidas, negativas são geradas por pedal do freio
+          const formattedPercent = percent < -100 ? -100 : percent;
+          setThrottlePercent(0);
+          setBrakePercent(-formattedPercent);
+        }
+
+        if (acceleration > 0) {
+          setBrakePercent(0);
+        }
+      }
+    }
+  }, [comingData.state.vehicleAcceleration, currentCycleSegment]);
+
   return (
     <Container>
       <Header>
         <div>
-          <Title value="Simulação de ciclo padrão" />
+          <Title value="Simulação de ciclo com sinais" />
         </div>
       </Header>
       <Content>
@@ -261,6 +384,8 @@ const Cycles: React.FC = () => {
             <CycleChart
               chartData={cycleData}
               currentTime={Number(comingData?.state.totalTime)}
+              firstMarker={firstMark}
+              secondMarker={secondMark}
             />
             <ButtonsContainer>
               <Button
@@ -365,6 +490,16 @@ const Cycles: React.FC = () => {
               </InfoContainer>
             </CurrentStatusContainer>
             <ImageContainer>
+              <IconsContainer>
+                <Icon>
+                  <PedalValue>{throttlePercent}%</PedalValue>
+                  <IconImg src={ThrottleIcon} alt="ThrottleIcon" />
+                </Icon>
+                <Icon>
+                  <PedalValue>{brakePercent}%</PedalValue>
+                  <IconImg src={BrakeIcon} alt="BrakeIcon" />
+                </Icon>
+              </IconsContainer>
               <VehicleImg src={HybridImage} alt="Hybrid" />
               <RedArrow
                 src={RedArrowImg}
@@ -378,6 +513,9 @@ const Cycles: React.FC = () => {
                   !!(comingData?.state.regenerationState === OnOffStateEnum.ON)
                 }
               />
+              <GearIndicator>
+                {currentGear === 'N' ? 'Neutro' : `${currentGear}ª marcha`}
+              </GearIndicator>
             </ImageContainer>
           </div>
         </RightContainer>
@@ -386,4 +524,4 @@ const Cycles: React.FC = () => {
   );
 };
 
-export default Cycles;
+export default CyclesWithSignals;
