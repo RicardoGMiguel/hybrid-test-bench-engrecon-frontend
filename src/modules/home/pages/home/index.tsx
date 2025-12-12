@@ -21,7 +21,10 @@ import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
 import { CommandEnum } from '@modules/home/enums/comman.enum';
 import { IComingData } from '@modules/home/interfaces/IComingData';
 import { OnOffStateEnum } from '@modules/home/enums/onOffStates.enum';
-import { IOscilloscopeProps } from '@modules/home/interfaces/IOscilloscopeProps';
+import {
+  IOsciChartData,
+  IOscilloscopeProps,
+} from '@modules/home/interfaces/IOscilloscopeProps';
 import TestChart from '@modules/home/components/testChart';
 import ResultsChart from '@modules/home/components/resultsChart';
 import Oscilloscope from '@modules/home/components/oscilloscope';
@@ -164,20 +167,12 @@ const Home: React.FC = () => {
         { x: 3, y: 0 },
         { x: 4, y: 0 },
         { x: 5, y: 0 },
-        { x: 5.2, y: 0.1 },
-        { x: 5.4, y: 0.2 },
-        { x: 5.6, y: 0.4 },
-        { x: 5.8, y: 1.6 },
-        { x: 6, y: 3 },
-        { x: 6.2, y: 5 },
-        { x: 6.4, y: 6.4 },
-        { x: 6.6, y: 7.6 },
-        { x: 6.8, y: 7.8 },
-        { x: 7, y: 8 },
-        { x: 8, y: 8 },
-        { x: 9, y: 8 },
-        { x: 10, y: 8 },
-        { x: 11, y: 8 },
+        { x: 5.6, y: 4.9 },
+        { x: 7, y: 4.9 },
+        { x: 8, y: 4.9 },
+        { x: 9, y: 4.9 },
+        { x: 10, y: 4.9 },
+        { x: 11, y: 4.9 },
       ],
     },
   ];
@@ -194,7 +189,10 @@ const Home: React.FC = () => {
         { x: 3, y: 0 },
         { x: 4, y: 0 },
         { x: 5, y: 0 },
-        { x: 6, y: 15 },
+        { x: 5.05, y: 6.7 },
+        { x: 5.2, y: 6.7 },
+        { x: 5.55, y: 6.7 },
+        { x: 5.6, y: 0 },
         { x: 7, y: 0 },
         { x: 8, y: 0 },
         { x: 9, y: 0 },
@@ -213,6 +211,10 @@ const Home: React.FC = () => {
 
   const [testChartData, setTestChartData] =
     useState<IOscilloscopeProps[]>(initialTestChartData);
+
+  const [sensorsChartData, setSensorsChartData] = useState<
+    IOscilloscopeProps[]
+  >([]);
 
   const [verticalLine, setVerticalLine] = useState(0);
 
@@ -337,6 +339,79 @@ const Home: React.FC = () => {
     [SendCommand, addToast, command, couplingMode, lastRequestTime]
   );
 
+  useEffect(() => {
+    if (comingData) {
+      const newCardanChartData: IOsciChartData[] = [];
+      const newMotorChartData: IOsciChartData[] = [];
+
+      const pulsePerRev = 21;
+      let cardanXValue = 0;
+      let motorXValue = 0;
+
+      for (let i = 0; i < 4; i += 1) {
+        // cardan
+        const cardanPeriod =
+          1 / (pulsePerRev * (Number(comingData.state.cardanSpeed) / 60));
+
+        cardanXValue += cardanPeriod / 2;
+
+        const newCardanDataHigh: IOsciChartData = {
+          x: cardanXValue,
+          y: 1,
+        };
+
+        newCardanChartData.push(newCardanDataHigh);
+
+        cardanXValue += cardanPeriod / 2;
+
+        const newCardanDataLow: IOsciChartData = {
+          x: cardanXValue,
+          y: 0,
+        };
+
+        newCardanChartData.push(newCardanDataLow);
+
+        // motor
+
+        const motorPeriod =
+          1 / (pulsePerRev * (Number(comingData.state.motorSpeed) / 60));
+
+        motorXValue += motorPeriod / 2;
+
+        const newMotorDataHigh: IOsciChartData = {
+          x: motorXValue + Number(comingData.state.delay) / 1000,
+          y: 1,
+        };
+
+        newMotorChartData.push(newMotorDataHigh);
+
+        motorXValue += motorPeriod / 2;
+
+        const newMotorDataLow: IOsciChartData = {
+          x: motorXValue + Number(comingData.state.delay) / 1000,
+          y: 0,
+        };
+
+        newMotorChartData.push(newMotorDataLow);
+      }
+
+      const newSensorsChartData: IOscilloscopeProps[] = [
+        {
+          id: 'Cardan',
+          color: 'hsl(0, 70%, 50%)',
+          data: newCardanChartData,
+        },
+        // {
+        //   id: 'Motor',
+        //   color: 'hsl(240, 70%, 50%)',
+        //   data: newMotorChartData,
+        // },
+      ];
+
+      setSensorsChartData(newSensorsChartData);
+    }
+  }, [comingData]);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [showResults, setShowResults] = useState(false);
@@ -384,7 +459,7 @@ const Home: React.FC = () => {
                       errors={errors.cardanInitialSpeed}
                       type="number"
                       min={0}
-                      max={3600}
+                      max={360} // alterar conforme necessidade
                       onFocusCapture={() => onOpen()}
                       onBlurCapture={() => onClose()}
                     />
@@ -403,7 +478,7 @@ const Home: React.FC = () => {
                       errors={errors.cardanEndSpeed}
                       type="number"
                       min={0}
-                      max={3600}
+                      max={360} // alterar conforme necessidade
                       onFocusCapture={() => onOpen()}
                       onBlurCapture={() => onClose()}
                     />
@@ -550,7 +625,7 @@ const Home: React.FC = () => {
         <RightContainer>
           <div>
             {!showResults ? (
-              <Oscilloscope chartData={comingData.chart} />
+              <Oscilloscope chartData={sensorsChartData} />
             ) : (
               <Grid
                 gap={6}
@@ -566,7 +641,7 @@ const Home: React.FC = () => {
                       chartData={staticSpeedResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
-                      endCoupling={7}
+                      endCoupling={5.6}
                     />
                   </Box>
                 </GridItem>
@@ -578,7 +653,7 @@ const Home: React.FC = () => {
                       chartData={staticSpeedDiffResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
-                      endCoupling={7}
+                      endCoupling={5.6}
                     />
                   </Box>
                 </GridItem>
@@ -590,7 +665,7 @@ const Home: React.FC = () => {
                       chartData={staticSleevePositionDiffResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
-                      endCoupling={7}
+                      endCoupling={5.6}
                     />
                   </Box>
                 </GridItem>
@@ -598,11 +673,11 @@ const Home: React.FC = () => {
                   <Box height="100%">
                     <ResultsChart
                       title="Velocidade da Luva"
-                      axisLeftLegend="Velocidade {m/s)"
+                      axisLeftLegend="Velocidade {mm/s)"
                       chartData={staticSleeveSpeedDiffResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
-                      endCoupling={7}
+                      endCoupling={5.6}
                     />
                   </Box>
                 </GridItem>

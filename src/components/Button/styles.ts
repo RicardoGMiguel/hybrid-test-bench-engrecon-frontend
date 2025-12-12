@@ -42,6 +42,11 @@ export const Container = styled.button<IContainerProps>`
   justify-content: center;
   gap: 10px;
 
+  @media (max-width: 2100px) {
+    height: 40px;
+    border-radius: 7px;
+  }
+
   ${({ selected }) =>
     selected
       ? css`
@@ -142,6 +147,12 @@ export const Container = styled.button<IContainerProps>`
     ${Label} {
       font-size: ${({ size }) =>
         size === 'sm' ? 10 : size === 'md' ? 12 : 14}px;
+    }
+  }
+
+  @media (max-width: 2100px) {
+    ${Label} {
+      font-size: 1rem;
     }
   }
 

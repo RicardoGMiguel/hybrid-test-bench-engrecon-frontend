@@ -114,9 +114,9 @@ const CycleChart: React.FC<ChartProps> = ({
                 axis: 'x', // pode ser 'x' ou 'y'
                 value: firstMarker || 0, // posição
                 lineStyle: {
-                  stroke: '#1707ff',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
+                  stroke: '#000',
+                  strokeWidth: 3,
+                  strokeDasharray: '20, 5',
                 },
                 legend: '',
                 legendOrientation: 'vertical',
@@ -125,9 +125,9 @@ const CycleChart: React.FC<ChartProps> = ({
                 axis: 'x', // pode ser 'x' ou 'y'
                 value: secondMarker || 0, // posição
                 lineStyle: {
-                  stroke: '#1707ff',
-                  strokeWidth: 2,
-                  strokeDasharray: '6, 6',
+                  stroke: '#000',
+                  strokeWidth: 3,
+                  strokeDasharray: '20, 5',
                 },
                 legend: '',
                 legendOrientation: 'vertical',

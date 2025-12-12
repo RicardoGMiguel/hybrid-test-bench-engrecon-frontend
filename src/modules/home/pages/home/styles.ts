@@ -25,6 +25,7 @@ export const ModeSelectionContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding-right: 1.5rem;
 `;
 
 export const ModeSelectionButton = styled.h1<{ selected: boolean }>`
@@ -61,7 +62,15 @@ export const LeftContainer = styled.div`
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     padding: 2rem;
+
+    > form {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   }
 `;
 
@@ -83,6 +92,8 @@ export const InfoContainer = styled.div`
   margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
   position: relative;
 `;
 
@@ -93,21 +104,38 @@ export const Info = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 600px) {
+    padding-left: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
 `;
 
 export const InfoTitle = styled.h1`
   font-size: 1.6rem;
   color: ${({ theme }) => theme.colors.dt_gray};
+
+  @media (max-width: 2100px) {
+    font-size: 1.2rem;
+  }
 `;
 
 export const InfoLabel = styled.h1`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.dt_gray};
+
+  @media (max-width: 2100px) {
+    font-size: 1rem;
+  }
 `;
 
 export const InfoText = styled.h1<{ color?: string }>`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.dt_font};
+
+  @media (max-width: 2100px) {
+    font-size: 1rem;
+  }
 
   ${({ color }) =>
     color &&
@@ -130,6 +158,10 @@ export const RadioButtonContainer = styled.div`
 export const ButtonLabel = styled.h1`
   font-size: 1.2rem;
   color: ${({ theme }) => theme.colors.dt_font};
+
+  @media (max-width: 2100px) {
+    font-size: 1rem;
+  }
 `;
 
 export const RadioButton = styled.div<{ selected: boolean }>`
@@ -141,6 +173,11 @@ export const RadioButton = styled.div<{ selected: boolean }>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  @media (max-width: 2100px) {
+    width: 1rem;
+    height: 1rem;
+  }
 
   > div {
     width: 70%;

@@ -21,8 +21,8 @@ export const Label = styled.p`
   font-weight: 600;
   color: ${({ theme }) => theme.colors.exyGray};
 
-  @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {
-    font-size: 1.2rem;
+  @media (max-width: 2100px) {
+    font-size: 1rem;
   }
 `;
 
@@ -43,6 +43,10 @@ export const Content = styled.div<ContainerInterface>`
   transition: 0.2s ease all;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   cursor: text;
+
+  @media (max-width: 2100px) {
+    height: 2rem;
+  }
 
   & > button {
     svg {
@@ -87,7 +91,7 @@ export const Content = styled.div<ContainerInterface>`
 
     color: ${({ theme }) => theme.colors.loginInputColor};
 
-    @media (max-width: ${({ theme }) => theme.breakpoints['3xl']}) {
+    @media (max-width: 2100px) {
       font-size: 1rem;
     }
 

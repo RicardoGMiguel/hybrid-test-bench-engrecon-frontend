@@ -57,7 +57,7 @@ const ResultsChart: React.FC<ChartProps> = ({
       }}
       enablePoints
       enableTouchCrosshair
-      pointSize={6}
+      pointSize={1}
       useMesh
       curve="linear"
       colors={{ scheme: 'tableau10' }}
