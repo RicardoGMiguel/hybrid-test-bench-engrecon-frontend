@@ -11,4 +11,5 @@ export const apiRoutes = {
   serialCommand: '/serial/command',
   serialCycleCommand: '/serial/cycle/command',
   serialCarlaCommand: '/serial/carla/command',
+  reportsChart: '/reports/chart',
 };

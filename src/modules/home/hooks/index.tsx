@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { errorHandler } from '@errors/errorHandler';
 
@@ -8,9 +8,12 @@ import { api, apiRoutes } from '@services/api';
 import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
 
 import { useToast } from '@hooks/toast';
+import { QueryKeys } from '@services/queryClient';
+import { IReportsChartData } from '../interfaces/IReportsChartData';
 
 interface HomeContextData {
   SendCommand: (requestData: IFormSendCommand) => Promise<void>;
+  GetReportChartData(): UseQueryResult<IReportsChartData>;
 }
 
 const HomeContext = createContext<HomeContextData>({} as HomeContextData);
@@ -46,10 +49,32 @@ const HomeProvider: React.FC<IHomeProviderProps> = ({ children }) => {
     }
   ).mutateAsync;
 
+  const GetReportChartData = (): UseQueryResult<IReportsChartData> =>
+    useQuery(
+      [QueryKeys.REPORTS_CHART_DATA],
+      async () => {
+        const { data } = await api.get<IReportsChartData>(
+          apiRoutes.reportsChart
+        );
+
+        return data;
+      },
+      {
+        onError: (error: any) => {
+          errorHandler({
+            error,
+            addToast,
+            title: 'Ocorreu um erro!',
+          });
+        },
+      }
+    );
+
   return (
     <HomeContext.Provider
       value={{
         SendCommand,
+        GetReportChartData,
       }}
     >
       {children}

@@ -155,59 +155,116 @@ const Home: React.FC = () => {
     },
   ];
 
-  const staticSleevePositionDiffResults: IOscilloscopeProps[] = [
-    {
-      id: 'Vel.',
-      color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
-      data: [
-        { x: 0, y: 0 },
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 2, y: 0 },
-        { x: 3, y: 0 },
-        { x: 4, y: 0 },
-        { x: 5, y: 0 },
-        { x: 5.6, y: 4.9 },
-        { x: 7, y: 4.9 },
-        { x: 8, y: 4.9 },
-        { x: 9, y: 4.9 },
-        { x: 10, y: 4.9 },
-        { x: 11, y: 4.9 },
-      ],
-    },
-  ];
+  // const staticSleevePositionDiffResults: IOscilloscopeProps[] = [
+  //   {
+  //     id: 'Vel.',
+  //     color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
+  //     data: [
+  //       { x: 0, y: 0 },
+  //       { x: 0, y: 0 },
+  //       { x: 1, y: 0 },
+  //       { x: 2, y: 0 },
+  //       { x: 3, y: 0 },
+  //       { x: 4, y: 0 },
+  //       { x: 5, y: 0 },
+  //       { x: 5.6, y: 4.9 },
+  //       { x: 7, y: 4.9 },
+  //       { x: 8, y: 4.9 },
+  //       { x: 9, y: 4.9 },
+  //       { x: 10, y: 4.9 },
+  //       { x: 11, y: 4.9 },
+  //     ],
+  //   },
+  // ];
 
-  const staticSleeveSpeedDiffResults: IOscilloscopeProps[] = [
-    {
-      id: 'Vel.',
-      color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
-      data: [
-        { x: 0, y: 0 },
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 2, y: 0 },
-        { x: 3, y: 0 },
-        { x: 4, y: 0 },
-        { x: 5, y: 0 },
-        { x: 5.05, y: 6.7 },
-        { x: 5.2, y: 6.7 },
-        { x: 5.55, y: 6.7 },
-        { x: 5.6, y: 0 },
-        { x: 7, y: 0 },
-        { x: 8, y: 0 },
-        { x: 9, y: 0 },
-        { x: 10, y: 0 },
-        { x: 11, y: 0 },
-      ],
-    },
-  ];
+  // const staticSleeveSpeedDiffResults: IOscilloscopeProps[] = [
+  //   {
+  //     id: 'Vel.',
+  //     color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
+  //     data: [
+  //       { x: 0, y: 0 },
+  //       { x: 0, y: 0 },
+  //       { x: 1, y: 0 },
+  //       { x: 2, y: 0 },
+  //       { x: 3, y: 0 },
+  //       { x: 4, y: 0 },
+  //       { x: 5, y: 0 },
+  //       { x: 5.05, y: 6.7 },
+  //       { x: 5.2, y: 6.7 },
+  //       { x: 5.55, y: 6.7 },
+  //       { x: 5.6, y: 0 },
+  //       { x: 7, y: 0 },
+  //       { x: 8, y: 0 },
+  //       { x: 9, y: 0 },
+  //       { x: 10, y: 0 },
+  //       { x: 11, y: 0 },
+  //     ],
+  //   },
+  // ];
 
   useEffect(() => {
     document.title = 'Hybrid Test | Home';
   }, []);
 
   const { addToast } = useToast();
-  const { SendCommand } = useHome();
+  const { SendCommand, GetReportChartData } = useHome();
+
+  const [speedResults, setSpeedResults] =
+    useState<IOscilloscopeProps[]>(staticSpeedResults);
+
+  const [speedDiffResults, setSpeedDiffResults] = useState<
+    IOscilloscopeProps[]
+  >(staticSpeedDiffResults);
+
+  const chartData = GetReportChartData().data;
+
+  useEffect(() => {
+    if (chartData) {
+      const newCardanSpeedData: IOsciChartData[] =
+        chartData.speedChartData?.map((item) => ({
+          x: item.time,
+          y: item.cardanSpeed,
+        })) || [];
+
+      const newMotorSpeedData: IOsciChartData[] =
+        chartData.speedChartData?.map((item) => ({
+          x: item.time,
+          y: item.motorSpeed,
+        })) || [];
+
+      const newSpeedResults: IOscilloscopeProps[] = [
+        {
+          id: 'Cardan',
+          color: 'hsl(240, 70%, 50%)',
+          data: newCardanSpeedData,
+        },
+        {
+          id: 'Coroa',
+          color: 'hsl(0, 70%, 50%)',
+
+          data: newMotorSpeedData,
+        },
+      ];
+
+      setSpeedResults(newSpeedResults);
+
+      const newSpeedDiffData: IOsciChartData[] =
+        chartData.diffSpeedChart?.map((item) => ({
+          x: item.time,
+          y: item.diffSpeedBetweenShafts,
+        })) || [];
+
+      const newSpeedDiffResults: IOscilloscopeProps[] = [
+        {
+          id: 'Difer.',
+          color: '#000',
+          data: newSpeedDiffData,
+        },
+      ];
+
+      setSpeedDiffResults(newSpeedDiffResults);
+    }
+  }, [chartData]);
 
   const [testChartData, setTestChartData] =
     useState<IOscilloscopeProps[]>(initialTestChartData);
@@ -401,11 +458,11 @@ const Home: React.FC = () => {
           color: 'hsl(0, 70%, 50%)',
           data: newCardanChartData,
         },
-        // {
-        //   id: 'Motor',
-        //   color: 'hsl(240, 70%, 50%)',
-        //   data: newMotorChartData,
-        // },
+        {
+          id: 'Motor',
+          color: 'hsl(240, 70%, 50%)',
+          data: newMotorChartData,
+        },
       ];
 
       setSensorsChartData(newSensorsChartData);
@@ -541,7 +598,12 @@ const Home: React.FC = () => {
                 </Info>
                 <Info>
                   <InfoLabel>Delay entre eixos:</InfoLabel>
-                  <InfoText>{comingData.state?.delay || '-'} ms</InfoText>
+                  <InfoText>
+                    {Number(comingData?.state?.delay) > 0
+                      ? comingData.state?.delay
+                      : '-'}
+                    ms
+                  </InfoText>
                 </Info>
                 <Info>
                   <InfoLabel>Motor de passo:</InfoLabel>
@@ -629,7 +691,7 @@ const Home: React.FC = () => {
             ) : (
               <Grid
                 gap={6}
-                templateColumns="repeat(2, 1fr)"
+                templateColumns="repeat(1, 1fr)"
                 templateRows="repeat(2, 1fr)"
                 h="100%"
               >
@@ -638,7 +700,7 @@ const Home: React.FC = () => {
                     <ResultsChart
                       title="Velocidades de cardan e coroa"
                       axisLeftLegend="Velocidade {RPM)"
-                      chartData={staticSpeedResults}
+                      chartData={speedResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
                       endCoupling={5.6}
@@ -650,14 +712,14 @@ const Home: React.FC = () => {
                     <ResultsChart
                       title="Diferença angular"
                       axisLeftLegend="Velocidade {RPM)"
-                      chartData={staticSpeedDiffResults}
+                      chartData={speedDiffResults}
                       couplingCommandInstant={3}
                       startCoupling={5}
                       endCoupling={5.6}
                     />
                   </Box>
                 </GridItem>
-                <GridItem>
+                {/* <GridItem>
                   <Box height="100%">
                     <ResultsChart
                       title="Posição da luva"
@@ -680,7 +742,7 @@ const Home: React.FC = () => {
                       endCoupling={5.6}
                     />
                   </Box>
-                </GridItem>
+                </GridItem> */}
               </Grid>
             )}
           </div>

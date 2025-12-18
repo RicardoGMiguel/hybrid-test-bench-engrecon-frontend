@@ -9,6 +9,7 @@ export const queryClient = new QueryClient({
 });
 
 export enum QueryKeys {
+  REPORTS_CHART_DATA = 'REPORTS_CHART_DATA',
   PROJECTS = 'PROJECTS',
   SHOW_PROJECT = 'SHOW_PROJECT',
   SHOW_PROJECT_EMPLOYEES = 'SHOW_PROJECT_EMPLOYEES',
