@@ -199,7 +199,7 @@ export const PedalValue = styled.h1`
 `;
 
 export const VehicleImg = styled.img`
-  height: 100%;
+  height: 300px;
 `;
 
 export const RedArrow = styled.img<{ visible: boolean }>`
@@ -242,5 +242,5 @@ export const GearIndicator = styled.h1`
 `;
 
 export const IconImg = styled.img`
-  width: 170px;
+  width: 100px;
 `;

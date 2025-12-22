@@ -64,7 +64,7 @@ const CycleChart: React.FC<ChartProps> = ({
           },
         },
       }}
-      enablePoints
+      enablePoints={false}
       pointSize={6}
       useMesh
       curve="linear"

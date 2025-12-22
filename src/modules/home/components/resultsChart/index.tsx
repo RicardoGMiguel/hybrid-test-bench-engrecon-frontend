@@ -9,7 +9,6 @@ interface ChartProps {
   chartData: IOscilloscopeProps[];
   couplingCommandInstant: number;
   startCoupling: number;
-  endCoupling: number;
 }
 
 const ResultsChart: React.FC<ChartProps> = ({
@@ -18,7 +17,6 @@ const ResultsChart: React.FC<ChartProps> = ({
   chartData,
   couplingCommandInstant,
   startCoupling,
-  endCoupling,
 }) => (
   <Container>
     <Title>{title}</Title>
@@ -84,17 +82,17 @@ const ResultsChart: React.FC<ChartProps> = ({
           legend: 'Início do engate',
           legendOrientation: 'vertical',
         },
-        {
-          axis: 'x',
-          value: endCoupling,
-          lineStyle: {
-            stroke: '#00c763',
-            strokeWidth: 2,
-            strokeDasharray: '6, 6',
-          },
-          legend: 'Fim do engate',
-          legendOrientation: 'vertical',
-        },
+        // {
+        //   axis: 'x',
+        //   value: endCoupling,
+        //   lineStyle: {
+        //     stroke: '#00c763',
+        //     strokeWidth: 2,
+        //     strokeDasharray: '6, 6',
+        //   },
+        //   legend: 'Fim do engate',
+        //   legendOrientation: 'vertical',
+        // },
       ]}
       legends={[
         {

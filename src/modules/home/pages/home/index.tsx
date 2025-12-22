@@ -216,21 +216,68 @@ const Home: React.FC = () => {
     IOscilloscopeProps[]
   >(staticSpeedDiffResults);
 
+  const [commandCouplingInstant, setCommandCouplingInstant] = useState(0);
+
+  const [couplingInstant, setCouplingInstant] = useState(0);
+
   const chartData = GetReportChartData().data;
+  const chartRefetch = GetReportChartData().refetch;
 
   useEffect(() => {
     if (chartData) {
+      setCommandCouplingInstant(
+        chartData.couplingInfo?.couplingCommandInstant || 0
+      );
+
+      setCouplingInstant(chartData.couplingInfo?.couplingInstant || 0);
+
       const newCardanSpeedData: IOsciChartData[] =
-        chartData.speedChartData?.map((item) => ({
-          x: item.time,
-          y: item.cardanSpeed,
-        })) || [];
+        chartData.speedChartData?.map((item) => {
+          const lastPoint =
+            chartData.speedChartData[chartData.speedChartData.length - 1];
+
+          if (item.time > lastPoint.time - 1) {
+            return {
+              x: item.time,
+              y: lastPoint.cardanSpeed,
+            };
+          }
+
+          if (item.time < 1) {
+            return {
+              x: item.time,
+              y: 0,
+            };
+          }
+          return {
+            x: item.time,
+            y: item.cardanSpeed,
+          };
+        }) || [];
 
       const newMotorSpeedData: IOsciChartData[] =
-        chartData.speedChartData?.map((item) => ({
-          x: item.time,
-          y: item.motorSpeed,
-        })) || [];
+        chartData.speedChartData?.map((item) => {
+          const lastPoint =
+            chartData.speedChartData[chartData.speedChartData.length - 1];
+
+          if (item.time > lastPoint.time - 1) {
+            return {
+              x: item.time,
+              y: lastPoint.motorSpeed,
+            };
+          }
+
+          if (item.time < 1) {
+            return {
+              x: item.time,
+              y: 0,
+            };
+          }
+          return {
+            x: item.time,
+            y: item.motorSpeed,
+          };
+        }) || [];
 
       const newSpeedResults: IOscilloscopeProps[] = [
         {
@@ -249,10 +296,28 @@ const Home: React.FC = () => {
       setSpeedResults(newSpeedResults);
 
       const newSpeedDiffData: IOsciChartData[] =
-        chartData.diffSpeedChart?.map((item) => ({
-          x: item.time,
-          y: item.diffSpeedBetweenShafts,
-        })) || [];
+        chartData.diffSpeedChart?.map((item) => {
+          const lastPoint =
+            chartData.diffSpeedChart[chartData.diffSpeedChart.length - 1];
+
+          if (item.time > lastPoint.time - 1) {
+            return {
+              x: item.time,
+              y: lastPoint.diffSpeedBetweenShafts,
+            };
+          }
+
+          if (item.time < 1) {
+            return {
+              x: item.time,
+              y: 0,
+            };
+          }
+          return {
+            x: item.time,
+            y: item.diffSpeedBetweenShafts,
+          };
+        }) || [];
 
       const newSpeedDiffResults: IOscilloscopeProps[] = [
         {
@@ -391,9 +456,18 @@ const Home: React.FC = () => {
             chart: [],
           });
         }
+
+        chartRefetch();
       }
     },
-    [SendCommand, addToast, command, couplingMode, lastRequestTime]
+    [
+      SendCommand,
+      addToast,
+      chartRefetch,
+      command,
+      couplingMode,
+      lastRequestTime,
+    ]
   );
 
   useEffect(() => {
@@ -471,7 +545,7 @@ const Home: React.FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(true);
 
   return (
     <Container>
@@ -480,16 +554,16 @@ const Home: React.FC = () => {
           <Title value="Teste de acoplamento" />
           <ModeSelectionContainer>
             <ModeSelectionButton
-              selected={!showResults}
-              onClick={() => setShowResults(false)}
-            >
-              Sensores
-            </ModeSelectionButton>
-            <ModeSelectionButton
               selected={showResults}
               onClick={() => setShowResults(true)}
             >
               Resultados
+            </ModeSelectionButton>
+            <ModeSelectionButton
+              selected={!showResults}
+              onClick={() => setShowResults(false)}
+            >
+              Sensores
             </ModeSelectionButton>
           </ModeSelectionContainer>
         </div>
@@ -701,9 +775,8 @@ const Home: React.FC = () => {
                       title="Velocidades de cardan e coroa"
                       axisLeftLegend="Velocidade {RPM)"
                       chartData={speedResults}
-                      couplingCommandInstant={3}
-                      startCoupling={5}
-                      endCoupling={5.6}
+                      couplingCommandInstant={commandCouplingInstant}
+                      startCoupling={couplingInstant}
                     />
                   </Box>
                 </GridItem>
@@ -713,9 +786,8 @@ const Home: React.FC = () => {
                       title="Diferença angular"
                       axisLeftLegend="Velocidade {RPM)"
                       chartData={speedDiffResults}
-                      couplingCommandInstant={3}
-                      startCoupling={5}
-                      endCoupling={5.6}
+                      couplingCommandInstant={commandCouplingInstant}
+                      startCoupling={couplingInstant}
                     />
                   </Box>
                 </GridItem>
