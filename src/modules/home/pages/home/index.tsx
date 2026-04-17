@@ -350,7 +350,7 @@ const Home: React.FC = () => {
       cardanSpeed: '-',
       motorSpeed: '-',
       delay: '-',
-      stepperMotorState: '-',
+      actuatorState: '-',
     },
     chart: [],
   });
@@ -451,7 +451,7 @@ const Home: React.FC = () => {
               cardanSpeed: '-',
               motorSpeed: '-',
               delay: '-',
-              stepperMotorState: '-',
+              actuatorState: '-',
             },
             chart: [],
           });
@@ -680,15 +680,15 @@ const Home: React.FC = () => {
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Motor de passo:</InfoLabel>
+                  <InfoLabel>Atuador do acoplamento:</InfoLabel>
                   <InfoText
                     color={
-                      comingData.state?.stepperMotorState === OnOffStateEnum.ON
+                      comingData.state?.actuatorState === OnOffStateEnum.ON
                         ? themeDefaults.colors.greenButtonColor
                         : themeDefaults.colors.danger
                     }
                   >
-                    {comingData.state?.stepperMotorState === OnOffStateEnum.ON
+                    {comingData.state?.actuatorState === OnOffStateEnum.ON
                       ? 'Ativado'
                       : 'Desativado'}
                   </InfoText>

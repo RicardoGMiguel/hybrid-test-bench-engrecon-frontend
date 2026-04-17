@@ -176,7 +176,7 @@ export const ImageContainer = styled.div`
 `;
 
 export const VehicleImg = styled.img`
-  height: 100%;
+  height: 300px;
 `;
 
 export const RedArrow = styled.img<{ visible: boolean }>`

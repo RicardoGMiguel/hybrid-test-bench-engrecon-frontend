@@ -5,7 +5,7 @@ interface IState {
   cardanSpeed: number | string;
   motorSpeed: number | string;
   delay?: number | string;
-  stepperMotorState?: OnOffStateEnum | string;
+  actuatorState?: OnOffStateEnum | string;
   motorState?: OnOffStateEnum | string;
   regenerationState?: OnOffStateEnum | string;
   vehicleSpeed?: number | string;
