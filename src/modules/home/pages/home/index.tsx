@@ -116,7 +116,7 @@ const Home: React.FC = () => {
       ],
     },
     {
-      id: 'Coroa',
+      id: 'Electric Motor',
       color: 'hsl(0, 70%, 50%)',
 
       data: [
@@ -137,7 +137,7 @@ const Home: React.FC = () => {
 
   const staticSpeedDiffResults: IOscilloscopeProps[] = [
     {
-      id: 'Difer.',
+      id: 'Diff.',
       color: '#000',
       data: [
         { x: 0, y: 0 },
@@ -286,7 +286,7 @@ const Home: React.FC = () => {
           data: newCardanSpeedData,
         },
         {
-          id: 'Coroa',
+          id: 'Electric Motor',
           color: 'hsl(0, 70%, 50%)',
 
           data: newMotorSpeedData,
@@ -321,7 +321,7 @@ const Home: React.FC = () => {
 
       const newSpeedDiffResults: IOscilloscopeProps[] = [
         {
-          id: 'Difer.',
+          id: 'Diff.',
           color: '#000',
           data: newSpeedDiffData,
         },
@@ -551,20 +551,20 @@ const Home: React.FC = () => {
     <Container>
       <Header>
         <div>
-          <Title value="Teste de acoplamento" />
+          <Title value="Coupling Test" />
           <ModeSelectionContainer>
             <ModeSelectionButton
               selected={showResults}
               onClick={() => setShowResults(true)}
             >
-              Resultados
+              Results
             </ModeSelectionButton>
-            <ModeSelectionButton
+            {/* <ModeSelectionButton
               selected={!showResults}
               onClick={() => setShowResults(false)}
             >
-              Sensores
-            </ModeSelectionButton>
+              Sensors
+            </ModeSelectionButton> */}
           </ModeSelectionContainer>
         </div>
       </Header>
@@ -579,11 +579,11 @@ const Home: React.FC = () => {
                     couplingVerticalLine={verticalLine}
                   />
                 </ConfigTestChartContainer>
-                <InfoTitle>Configuração do teste</InfoTitle>
+                <InfoTitle>Test configurations</InfoTitle>
                 <Info>
                   <FormControl isInvalid={!!errors.cardanInitialSpeed}>
                     <SettingsInput
-                      label="Velocidade inicial do eixo-cardan (rpm)"
+                      label="Initial Cardan Speed (rpm)"
                       register={register}
                       name="cardanInitialSpeed"
                       state={getFieldState('cardanInitialSpeed')}
@@ -602,7 +602,7 @@ const Home: React.FC = () => {
                 <Info>
                   <FormControl isInvalid={!!errors.cardanEndSpeed}>
                     <SettingsInput
-                      label="Velocidade final do eixo-cardan (rpm)"
+                      label="End Cardan Speed (rpm)"
                       register={register}
                       name="cardanEndSpeed"
                       state={getFieldState('cardanEndSpeed')}
@@ -621,7 +621,7 @@ const Home: React.FC = () => {
                 <Info>
                   <FormControl isInvalid={!!errors.cardanTestTotalTime}>
                     <SettingsInput
-                      label="Tempo de rampa (segundos)"
+                      label="Ramp Time (seconds)"
                       register={register}
                       name="cardanTestTotalTime"
                       state={getFieldState('cardanTestTotalTime')}
@@ -640,7 +640,7 @@ const Home: React.FC = () => {
                 <Info>
                   <FormControl isInvalid={!!errors.couplingInstant}>
                     <SettingsInput
-                      label="Instante de acoplamento (segundos)"
+                      label="Coupling Instant (seconds)"
                       register={register}
                       name="couplingInstant"
                       state={getFieldState('couplingInstant')}
@@ -658,20 +658,20 @@ const Home: React.FC = () => {
                 </Info>
               </InfoContainer>
               <InfoContainer>
-                <InfoTitle>Condição atual</InfoTitle>
+                <InfoTitle>Current Condition</InfoTitle>
                 <MessageComponent message={comingData?.message || '-'} />
                 <Info>
-                  <InfoLabel>Velocidade do eixo-cardan:</InfoLabel>
+                  <InfoLabel>Cardan Speed:</InfoLabel>
                   <InfoText>
                     {comingData.state?.cardanSpeed || '-'} rpm
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Velocidade do motor elétrico:</InfoLabel>
+                  <InfoLabel>Electric Motor speed:</InfoLabel>
                   <InfoText>{comingData.state?.motorSpeed || '-'} rpm</InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Delay entre eixos:</InfoLabel>
+                  <InfoLabel>Delay between shafts:</InfoLabel>
                   <InfoText>
                     {Number(comingData?.state?.delay) > 0
                       ? comingData.state?.delay
@@ -680,7 +680,7 @@ const Home: React.FC = () => {
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Atuador do acoplamento:</InfoLabel>
+                  <InfoLabel>Coupling Actuator:</InfoLabel>
                   <InfoText
                     color={
                       comingData.state?.actuatorState === OnOffStateEnum.ON
@@ -689,13 +689,13 @@ const Home: React.FC = () => {
                     }
                   >
                     {comingData.state?.actuatorState === OnOffStateEnum.ON
-                      ? 'Ativado'
-                      : 'Desativado'}
+                      ? 'Activated'
+                      : 'Deactivated'}
                   </InfoText>
                 </Info>
               </InfoContainer>
               <InfoContainer>
-                <InfoTitle>Modos de acoplamento</InfoTitle>
+                <InfoTitle>Coupling Modes</InfoTitle>
                 <CouplingModeButtons>
                   <RadioButtonContainer>
                     <ButtonLabel>Free</ButtonLabel>
@@ -728,7 +728,7 @@ const Home: React.FC = () => {
               </InfoContainer>
               <ButtonsContainer>
                 <Button
-                  label="Iniciar"
+                  label="Start"
                   size="lg"
                   type="button"
                   onClick={() => {
@@ -737,7 +737,7 @@ const Home: React.FC = () => {
                   selected={!!(command === CommandEnum.start)}
                 />
                 <Button
-                  label="Parar"
+                  label="Stop"
                   size="lg"
                   type="button"
                   onClick={() => {
@@ -748,7 +748,7 @@ const Home: React.FC = () => {
               </ButtonsContainer>
               <ButtonsContainer>
                 <Button
-                  label="Enviar comando"
+                  label="Send Command"
                   size="lg"
                   type="submit"
                   disabled={isSubmitting || isLoading}
@@ -772,8 +772,8 @@ const Home: React.FC = () => {
                 <GridItem>
                   <Box height="100%">
                     <ResultsChart
-                      title="Velocidades de cardan e coroa"
-                      axisLeftLegend="Velocidade {RPM)"
+                      title="Cardan and Electric Motor Speeds"
+                      axisLeftLegend="Speed {RPM)"
                       chartData={speedResults}
                       couplingCommandInstant={commandCouplingInstant}
                       startCoupling={couplingInstant}
@@ -783,8 +783,8 @@ const Home: React.FC = () => {
                 <GridItem>
                   <Box height="100%">
                     <ResultsChart
-                      title="Diferença angular"
-                      axisLeftLegend="Velocidade {RPM)"
+                      title="Angular Difference"
+                      axisLeftLegend="Speed {RPM)"
                       chartData={speedDiffResults}
                       couplingCommandInstant={commandCouplingInstant}
                       startCoupling={couplingInstant}

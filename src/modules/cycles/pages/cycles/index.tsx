@@ -215,14 +215,14 @@ const Cycles: React.FC = () => {
     <Container>
       <Header>
         <div>
-          <Title value="Simulação de ciclo padrão" />
+          <Title value="Standard Cycle Simulation" />
         </div>
       </Header>
       <Content>
         <LeftContainer>
           <div>
             <InfoContainer>
-              <InfoTitle>Seleção do ciclo</InfoTitle>
+              <InfoTitle>Cycle Selection</InfoTitle>
               <CycleSelectionButtons>
                 <RadioButtonContainer>
                   <ButtonLabel>HFET</ButtonLabel>
@@ -264,7 +264,7 @@ const Cycles: React.FC = () => {
             />
             <ButtonsContainer>
               <Button
-                label="Iniciar"
+                label="Start"
                 size="lg"
                 type="button"
                 onClick={() => {
@@ -273,7 +273,7 @@ const Cycles: React.FC = () => {
                 selected={!!(cycleCommand === CycleCommandEnum.cycle_start)}
               />
               <Button
-                label="Cancelar"
+                label="Cancel"
                 size="lg"
                 type="button"
                 onClick={() => {
@@ -284,7 +284,7 @@ const Cycles: React.FC = () => {
             </ButtonsContainer>
             <ButtonsContainer>
               <Button
-                label="Enviar comando"
+                label="Send Command"
                 size="lg"
                 type="button"
                 selected
@@ -298,36 +298,36 @@ const Cycles: React.FC = () => {
           <div>
             <CurrentStatusContainer>
               <InfoContainer>
-                <InfoTitle>Status do ciclo</InfoTitle>
+                <InfoTitle>Cycle Status</InfoTitle>
 
                 <Info>
-                  <InfoLabel>Velocidade do veículo</InfoLabel>
+                  <InfoLabel>Vehicle Speed</InfoLabel>
                   <InfoText>
                     {comingData?.state.vehicleSpeed || '-'} km/h
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Aceleração do veículo</InfoLabel>
+                  <InfoLabel>Vehicle Acceleration</InfoLabel>
                   <InfoText>
                     {comingData?.state.vehicleAcceleration || '-'} m/s²
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Rotação do cardan:</InfoLabel>
+                  <InfoLabel>Cardan Speed:</InfoLabel>
                   <InfoText>
                     {comingData?.state.cardanSpeed || '-'} rpm
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Tempo total</InfoLabel>
+                  <InfoLabel>Total Time</InfoLabel>
                   <InfoText>{comingData?.state.totalTime || '-'} s</InfoText>
                 </Info>
               </InfoContainer>
               <InfoContainer>
-                <InfoTitle>Condição atual</InfoTitle>
+                <InfoTitle>Current Condition</InfoTitle>
                 <MessageComponent message={comingData?.message || '-'} />
                 <Info>
-                  <InfoLabel>Motor elétrico:</InfoLabel>
+                  <InfoLabel>Electric Motor:</InfoLabel>
                   <InfoText
                     color={
                       comingData.state?.motorState === OnOffStateEnum.ON
@@ -336,18 +336,18 @@ const Cycles: React.FC = () => {
                     }
                   >
                     {comingData.state?.motorState === OnOffStateEnum.ON
-                      ? 'Ativado'
-                      : 'Desativado'}
+                      ? 'Activated'
+                      : 'Deactivated'}
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Rotação do motor elétrico:</InfoLabel>
+                  <InfoLabel>Electric Motor Speed:</InfoLabel>
                   <InfoText>{comingData?.state.motorSpeed || '-'} rpm</InfoText>
                 </Info>
 
                 <Info>
                   <InfoLabel>
-                    Regeneração ({regenCurrentTime} s) (media:{' '}
+                    Regeneration ({regenCurrentTime} s) (average:{' '}
                     {averageRegenInterval} s):
                   </InfoLabel>
                   <InfoText
@@ -358,8 +358,8 @@ const Cycles: React.FC = () => {
                     }
                   >
                     {comingData.state?.regenerationState === OnOffStateEnum.ON
-                      ? 'Ativada'
-                      : 'Desativada'}
+                      ? 'Activated'
+                      : 'Deactivated'}
                   </InfoText>
                 </Info>
               </InfoContainer>

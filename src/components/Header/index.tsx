@@ -10,7 +10,7 @@ import Confirmation from '@components/Confirmation';
 import { TranslateRolePT } from '@modules/users/utils/translateRoleToPT';
 import { navItems } from './configs/navItems';
 import DTLogo from './assets/logo_DT.png';
-import EngreconLogo from './assets/engrecon_icon_blue.png';
+// import EngreconLogo from './assets/engrecon_icon_blue.png';
 
 import {
   Container,
@@ -38,8 +38,8 @@ const Header: React.FC = () => {
       <Container>
         <LogoContent>
           <NavigationBar>
-            <img src={DTLogo} alt="DTIcon" />
-            <img src={EngreconLogo} alt="EngreconLogo" id="engreconLogo" />
+            <img src={DTLogo} alt="DTIcon" style={{ height: 100 }} />
+            {/* <img src={EngreconLogo} alt="EngreconLogo" id="engreconLogo" /> */}
             {navItems().map(({ route, label }) => (
               <NavItem key={label} route={route} label={label} />
             ))}

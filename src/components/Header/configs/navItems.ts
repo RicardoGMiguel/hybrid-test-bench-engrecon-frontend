@@ -6,22 +6,22 @@ export const navItems = () =>
   [
     {
       route: PrivatePathsEnum.HOME,
-      label: 'Acoplamento',
+      label: 'Coupling',
     },
     {
       route: PrivatePathsEnum.CYCLES,
-      label: 'Ciclos',
+      label: 'Cycles',
     },
-    {
-      route: PrivatePathsEnum.CYCLES_WITH_SIGNALS,
-      label: 'Ciclos com sinais',
-    },
-    {
-      route: PrivatePathsEnum.CARLA,
-      label: 'Carla Simulator',
-    },
+    // {
+    //   route: PrivatePathsEnum.CYCLES_WITH_SIGNALS,
+    //   label: 'Ciclos com sinais',
+    // },
+    // {
+    //   route: PrivatePathsEnum.CARLA,
+    //   label: 'Carla Simulator',
+    // },
     {
       route: PrivatePathsEnum.USERS,
-      label: 'Usuários',
+      label: 'Users',
     },
   ] as INavItemData[];

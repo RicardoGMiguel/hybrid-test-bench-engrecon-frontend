@@ -19,7 +19,7 @@ const TestChart: React.FC<ChartProps> = ({
       xScale={{ type: 'linear', min: 0, max: 'auto' }}
       yScale={{ type: 'linear', min: 0, max: 'auto' }} // para espaçamento vertical
       axisBottom={{
-        legend: 'Tempo (s)',
+        legend: 'Time (s)',
         legendOffset: 30,
         tickSize: 5,
         tickPadding: 5,
@@ -33,7 +33,7 @@ const TestChart: React.FC<ChartProps> = ({
         },
       }}
       axisLeft={{
-        legend: 'Velocidade',
+        legend: 'Speed',
         legendOffset: -35,
         tickSize: 5,
         tickPadding: 5,
@@ -60,7 +60,7 @@ const TestChart: React.FC<ChartProps> = ({
             strokeWidth: 2,
             strokeDasharray: '6, 6',
           },
-          legend: 'Instante do acoplamento',
+          legend: 'Coupling Instant',
           legendOrientation: 'vertical',
         },
       ]}

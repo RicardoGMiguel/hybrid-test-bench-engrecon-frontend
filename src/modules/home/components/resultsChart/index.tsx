@@ -26,7 +26,7 @@ const ResultsChart: React.FC<ChartProps> = ({
       xScale={{ type: 'linear', min: 0, max: 'auto' }}
       yScale={{ type: 'linear', min: 0, max: 'auto' }} // para espaçamento vertical
       axisBottom={{
-        legend: 'Tempo (s)',
+        legend: 'Time (s)',
         legendOffset: 35,
         tickSize: 5,
         tickPadding: 5,
@@ -68,7 +68,7 @@ const ResultsChart: React.FC<ChartProps> = ({
             strokeWidth: 2,
             strokeDasharray: '6, 6',
           },
-          legend: 'Comando de engate',
+          legend: 'Coupling Command',
           legendOrientation: 'vertical',
         },
         {
@@ -79,7 +79,7 @@ const ResultsChart: React.FC<ChartProps> = ({
             strokeWidth: 2,
             strokeDasharray: '6, 6',
           },
-          legend: 'Início do engate',
+          legend: 'Start coupling',
           legendOrientation: 'vertical',
         },
         // {
