@@ -125,7 +125,7 @@ export const InfoLabel = styled.h1`
   color: ${({ theme }) => theme.colors.dt_gray};
 
   @media (max-width: 2100px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -134,7 +134,7 @@ export const InfoText = styled.h1<{ color?: string }>`
   color: ${({ theme }) => theme.colors.dt_font};
 
   @media (max-width: 2100px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   ${({ color }) =>
@@ -195,7 +195,6 @@ export const RadioButton = styled.div<{ selected: boolean }>`
 
 export const ButtonsContainer = styled.div`
   width: 100%;
-  padding: 2rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   display: flex;

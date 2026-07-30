@@ -22,7 +22,7 @@ export const Label = styled.p`
   color: ${({ theme }) => theme.colors.exyGray};
 
   @media (max-width: 2100px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 `;
 

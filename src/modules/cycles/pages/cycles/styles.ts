@@ -40,8 +40,12 @@ export const LeftContainer = styled.div`
     height: 100%;
     background: ${({ theme }) => theme.colors.lightGray};
     border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
+
+    > form {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   }
 `;
 
@@ -68,6 +72,48 @@ export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+`;
+
+export const FormContainer = styled.div`
+  width: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const PreviewInfo = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+export const PreviewLabel = styled.h1`
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.colors.dt_gray};
+
+  @media (max-width: 2100px) {
+    font-size: 1.1rem;
+  }
+`;
+
+export const PreviewInfoText = styled.h1<{ color?: string }>`
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.colors.dt_font};
+
+  @media (max-width: 2100px) {
+    font-size: 1.1rem;
+  }
+
+  ${({ color }) =>
+    color &&
+    css`
+      color: ${color};
+    `}
 `;
 
 export const Info = styled.div`
@@ -152,7 +198,9 @@ export const RadioButton = styled.div<{
 
 export const ButtonsContainer = styled.div`
   width: 100%;
-  padding: 2rem;
+  padding: 1rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -161,6 +209,7 @@ export const ButtonsContainer = styled.div`
 
 export const CurrentStatusContainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
 `;
 
@@ -170,12 +219,12 @@ export const ImageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   position: relative;
+  padding: 1rem;
 `;
 
 export const VehicleImg = styled.img`
-  height: 300px;
+  height: 100%;
 `;
 
 export const RedArrow = styled.img<{ visible: boolean }>`

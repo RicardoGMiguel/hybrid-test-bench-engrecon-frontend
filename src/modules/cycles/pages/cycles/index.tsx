@@ -1,8 +1,11 @@
 import Title from '@components/Title';
 import React, { useEffect, useState, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { FormControl, FormErrorMessage } from '@chakra-ui/react';
 
 import { useCycle } from '@modules/cycles/hooks/index';
 import Button from '@components/Button';
+import SettingsInput from '@components/Form/SettingsInput';
 
 import { CyclesEnum } from '@modules/cycles/enums/cycles.enum';
 
@@ -38,7 +41,16 @@ import {
   RedArrow,
   BlueArrow,
   VehicleImg,
+  FormContainer,
+  PreviewLabel,
+  PreviewInfoText,
+  PreviewInfo,
 } from './styles';
+
+import {
+  EditCyclesSettingsFormData,
+  editCyclesSettingsFormResolver,
+} from './editCyclesSettingsForm.zod';
 
 const Cycles: React.FC = () => {
   useEffect(() => {
@@ -81,6 +93,17 @@ const Cycles: React.FC = () => {
 
   const { SendCycleCommand } = useCycle();
 
+  const {
+    getFieldState,
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+    watch,
+  } = useForm<EditCyclesSettingsFormData>({
+    resolver: editCyclesSettingsFormResolver,
+    mode: 'all',
+  });
+
   const readFile = useCallback(async (url: string) => {
     const response = await fetch(url);
     const text = await response.text();
@@ -111,78 +134,83 @@ const Cycles: React.FC = () => {
     newData.then((result) => setCycleData(result));
   }, [readFile, selectedCycle]);
 
-  const onSubmit = useCallback(async () => {
-    const dataToSend: IFormSendCycleCommand = {
-      cmd: cycleCommand,
-      cycle: selectedCycle,
-    };
-
-    SendCycleCommand(dataToSend).then(() => {
-      if (allRegenTimes.length > 0) {
-        const soma = allRegenTimes.reduce((acc, val) => acc + val, 0);
-        const media = soma / allRegenTimes.length;
-        setAverageRegenInterval(media.toFixed(1));
-      }
-
-      if (ws) {
-        ws.close();
-        setWs(null);
-      }
-
-      setComingData({
-        message: '-',
-        state: {
-          cardanSpeed: '-',
-          motorSpeed: '-',
-          motorState: false,
-          regenerationState: false,
-          vehicleSpeed: '-',
-          vehicleAcceleration: '-',
-          totalTime: '-',
-        },
-        chart: [],
-      });
-
-      setLastCycleCommand(CycleCommandEnum.cycle_stop);
-    });
-
-    setLastCycleCommand(cycleCommand);
-
-    if (cycleCommand === CycleCommandEnum.cycle_start) {
-      const socket = new WebSocket('ws://localhost:8080');
-
-      socket.onmessage = (event) => {
-        const newComingData = JSON.parse(event.data);
-        const newStateComingData: IComingData = newComingData.state;
-
-        setComingData(newStateComingData);
-        console.log(newStateComingData);
+  const onSubmit = useCallback(
+    async (data: EditCyclesSettingsFormData) => {
+      const dataToSend: IFormSendCycleCommand = {
+        cmd: cycleCommand,
+        cycle: selectedCycle,
       };
 
-      setWs(socket);
-    }
+      console.log('brakeTorque: ', data.brakeTorque);
 
-    if (cycleCommand === CycleCommandEnum.cycle_stop) {
-      if (ws) {
-        ws.close();
-        setWs(null);
+      SendCycleCommand(dataToSend).then(() => {
+        if (allRegenTimes.length > 0) {
+          const soma = allRegenTimes.reduce((acc, val) => acc + val, 0);
+          const media = soma / allRegenTimes.length;
+          setAverageRegenInterval(media.toFixed(1));
+        }
+
+        if (ws) {
+          ws.close();
+          setWs(null);
+        }
+
+        setComingData({
+          message: '-',
+          state: {
+            cardanSpeed: '-',
+            motorSpeed: '-',
+            motorState: false,
+            regenerationState: false,
+            vehicleSpeed: '-',
+            vehicleAcceleration: '-',
+            totalTime: '-',
+          },
+          chart: [],
+        });
+
+        setLastCycleCommand(CycleCommandEnum.cycle_stop);
+      });
+
+      setLastCycleCommand(cycleCommand);
+
+      if (cycleCommand === CycleCommandEnum.cycle_start) {
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onmessage = (event) => {
+          const newComingData = JSON.parse(event.data);
+          const newStateComingData: IComingData = newComingData.state;
+
+          setComingData(newStateComingData);
+          console.log(newStateComingData);
+        };
+
+        setWs(socket);
       }
 
-      setComingData({
-        message: '-',
-        state: {
-          cardanSpeed: '-',
-          motorSpeed: '-',
-          motorState: false,
-          regenerationState: false,
-          vehicleSpeed: '-',
-          vehicleAcceleration: '-',
-          totalTime: '-',
-        },
-        chart: [],
-      });
-    }
-  }, [SendCycleCommand, allRegenTimes, cycleCommand, selectedCycle, ws]);
+      if (cycleCommand === CycleCommandEnum.cycle_stop) {
+        if (ws) {
+          ws.close();
+          setWs(null);
+        }
+
+        setComingData({
+          message: '-',
+          state: {
+            cardanSpeed: '-',
+            motorSpeed: '-',
+            motorState: false,
+            regenerationState: false,
+            vehicleSpeed: '-',
+            vehicleAcceleration: '-',
+            totalTime: '-',
+          },
+          chart: [],
+        });
+      }
+    },
+    [SendCycleCommand, allRegenTimes, cycleCommand, selectedCycle, ws]
+  );
 
   useEffect(() => {
     if (!comingData) return;
@@ -213,6 +241,19 @@ const Cycles: React.FC = () => {
     }
   }, [allRegenTimes, comingData, regenCurrentTime, regenStartTime]);
 
+  const [brakePressure, setBrakePressure] = useState(0);
+
+  const watchBrakeTorque = watch('brakeTorque');
+
+  useEffect(() => {
+    const pi = 3.1416;
+    const pumpDisplacement = 50; // ccm
+    const pressurePa =
+      (2 * pi * 1000000 * Number(watchBrakeTorque)) / pumpDisplacement;
+    const pressureBar = pressurePa / 100000;
+    setBrakePressure(pressureBar);
+  }, [watchBrakeTorque]);
+
   return (
     <Container>
       <Header>
@@ -223,77 +264,105 @@ const Cycles: React.FC = () => {
       <Content>
         <LeftContainer>
           <div>
-            <InfoContainer>
-              <InfoTitle>Cycle Selection</InfoTitle>
-              <CycleSelectionButtons>
-                <RadioButtonContainer>
-                  <ButtonLabel>HFET</ButtonLabel>
-                  <RadioButton
-                    onClick={() => {
-                      if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
-                        setSelectedCycle(CyclesEnum.HFET);
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <InfoContainer>
+                <InfoTitle>Cycle Selection</InfoTitle>
+                <CycleSelectionButtons>
+                  <RadioButtonContainer>
+                    <ButtonLabel>HFET</ButtonLabel>
+                    <RadioButton
+                      onClick={() => {
+                        if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
+                          setSelectedCycle(CyclesEnum.HFET);
+                        }
+                      }}
+                      selected={!!(selectedCycle === CyclesEnum.HFET)}
+                      disabled={
+                        !!(lastCycleCommand === CycleCommandEnum.cycle_start)
                       }
-                    }}
-                    selected={!!(selectedCycle === CyclesEnum.HFET)}
-                    disabled={
-                      !!(lastCycleCommand === CycleCommandEnum.cycle_start)
-                    }
-                  >
-                    <div />
-                  </RadioButton>
-                </RadioButtonContainer>
-                <RadioButtonContainer>
-                  <ButtonLabel>UDDS</ButtonLabel>
-                  <RadioButton
-                    onClick={() => {
-                      if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
-                        setSelectedCycle(CyclesEnum.UDDS);
+                    >
+                      <div />
+                    </RadioButton>
+                  </RadioButtonContainer>
+                  <RadioButtonContainer>
+                    <ButtonLabel>UDDS</ButtonLabel>
+                    <RadioButton
+                      onClick={() => {
+                        if (lastCycleCommand === CycleCommandEnum.cycle_stop) {
+                          setSelectedCycle(CyclesEnum.UDDS);
+                        }
+                      }}
+                      selected={!!(selectedCycle === CyclesEnum.UDDS)}
+                      disabled={
+                        !!(lastCycleCommand === CycleCommandEnum.cycle_start)
                       }
-                    }}
-                    selected={!!(selectedCycle === CyclesEnum.UDDS)}
-                    disabled={
-                      !!(lastCycleCommand === CycleCommandEnum.cycle_start)
-                    }
-                  >
-                    <div />
-                  </RadioButton>
-                </RadioButtonContainer>
-              </CycleSelectionButtons>
-            </InfoContainer>
-            <CycleChart
-              chartData={cycleData}
-              currentTime={Number(comingData?.state.totalTime)}
-            />
-            <ButtonsContainer>
-              <Button
-                label="Start"
-                size="lg"
-                type="button"
-                onClick={() => {
-                  setCycleCommand(CycleCommandEnum.cycle_start);
-                }}
-                selected={!!(cycleCommand === CycleCommandEnum.cycle_start)}
+                    >
+                      <div />
+                    </RadioButton>
+                  </RadioButtonContainer>
+                </CycleSelectionButtons>
+              </InfoContainer>
+              <CycleChart
+                chartData={cycleData}
+                currentTime={Number(comingData?.state.totalTime)}
               />
-              <Button
-                label="Cancel"
-                size="lg"
-                type="button"
-                onClick={() => {
-                  setCycleCommand(CycleCommandEnum.cycle_stop);
-                }}
-                selected={!!(cycleCommand === CycleCommandEnum.cycle_stop)}
-              />
-            </ButtonsContainer>
-            <ButtonsContainer>
-              <Button
-                label="Send Command"
-                size="lg"
-                type="button"
-                selected
-                onClick={() => onSubmit()}
-                disabled={!!(lastCycleCommand === cycleCommand)}
-              />
-            </ButtonsContainer>
+              <FormContainer>
+                <PreviewInfo>
+                  <FormControl isInvalid={!!errors.brakeTorque}>
+                    <SettingsInput
+                      label="Hydraulic Brake Torque (Nm)"
+                      register={register}
+                      name="brakeTorque"
+                      state={getFieldState('brakeTorque')}
+                      errors={errors.brakeTorque}
+                      type="number"
+                      min={0}
+                      max={300}
+                    />
+                    <FormErrorMessage>
+                      {errors.brakeTorque?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                </PreviewInfo>
+                <PreviewInfo>
+                  <PreviewLabel>Hydraulic Brake Pressure:</PreviewLabel>
+                  <PreviewInfoText>
+                    {brakePressure.toFixed(0)} bar
+                  </PreviewInfoText>
+                </PreviewInfo>
+              </FormContainer>
+              <ButtonsContainer>
+                <Button
+                  label="Start"
+                  size="lg"
+                  type="button"
+                  onClick={() => {
+                    setCycleCommand(CycleCommandEnum.cycle_start);
+                  }}
+                  selected={!!(cycleCommand === CycleCommandEnum.cycle_start)}
+                />
+                <Button
+                  label="Cancel"
+                  size="lg"
+                  type="button"
+                  onClick={() => {
+                    setCycleCommand(CycleCommandEnum.cycle_stop);
+                  }}
+                  selected={!!(cycleCommand === CycleCommandEnum.cycle_stop)}
+                />
+              </ButtonsContainer>
+              <ButtonsContainer>
+                <Button
+                  label="Send Command"
+                  size="lg"
+                  type="submit"
+                  selected
+                  disabled={
+                    isSubmitting || !!(lastCycleCommand === cycleCommand)
+                  }
+                />
+              </ButtonsContainer>
+            </form>
           </div>
         </LeftContainer>
         <RightContainer>
@@ -315,7 +384,7 @@ const Cycles: React.FC = () => {
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Cardan Speed:</InfoLabel>
+                  <InfoLabel>Driveshaft Speed:</InfoLabel>
                   <InfoText>
                     {comingData?.state.cardanSpeed || '-'} rpm
                   </InfoText>
@@ -364,19 +433,43 @@ const Cycles: React.FC = () => {
                 </Info>
               </InfoContainer>
             </CurrentStatusContainer>
-            <ImageContainer>
-              <VehicleImg src={HybridImage} alt="Hybrid" />
-              <RedArrow
-                src={RedArrowImg}
-                alt="redArrow"
-                visible={!!comingData?.state.motorState}
-              />
-              <BlueArrow
-                src={BlueArrowImg}
-                alt="blueArrow"
-                visible={!!comingData?.state.regenerationState}
-              />
-            </ImageContainer>
+            <CurrentStatusContainer>
+              <InfoContainer>
+                <InfoTitle>Test bench status</InfoTitle>
+
+                <Info>
+                  <InfoLabel>Hydraulic Brake Pressure:</InfoLabel>
+                  <InfoText>200 bar</InfoText>
+                </Info>
+                <Info>
+                  <InfoLabel>Oil Temperature:</InfoLabel>
+                  <InfoText>50 °C</InfoText>
+                </Info>
+                <Info>
+                  <InfoLabel>Battery SOC:</InfoLabel>
+                  <InfoText>80%</InfoText>
+                </Info>
+                <Info>
+                  <InfoLabel>Accumulated Energy Consumption:</InfoLabel>
+                  <InfoText>100 kWh</InfoText>
+                </Info>
+              </InfoContainer>
+              <InfoContainer>
+                <ImageContainer>
+                  <VehicleImg src={HybridImage} alt="Hybrid" />
+                  <RedArrow
+                    src={RedArrowImg}
+                    alt="redArrow"
+                    visible={!!comingData?.state.motorState}
+                  />
+                  <BlueArrow
+                    src={BlueArrowImg}
+                    alt="blueArrow"
+                    visible={!!comingData?.state.regenerationState}
+                  />
+                </ImageContainer>
+              </InfoContainer>
+            </CurrentStatusContainer>
           </div>
         </RightContainer>
       </Content>
