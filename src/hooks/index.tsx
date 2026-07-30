@@ -7,7 +7,9 @@ import themeDefaults from '@style/themeDefaults';
 import { AuthProvider } from '@modules/auth/hooks/auth';
 import { UserProvider } from '@modules/users/hooks/index';
 import { HomeProvider } from '@modules/home/hooks/index';
+import { SerialHomeProvider } from '@modules/reducedHome/hooks';
 import { CycleProvider } from '@modules/cycles/hooks/index';
+import { SerialCycleProvider } from '@modules/reducedCycles/hooks';
 import { CarlaProvider } from '@modules/carla/hooks/index';
 
 import { ToastProvider } from './toast';
@@ -30,9 +32,13 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
           <AuthProvider>
             <UserProvider>
               <HomeProvider>
-                <CycleProvider>
-                  <CarlaProvider>{children}</CarlaProvider>
-                </CycleProvider>
+                <SerialHomeProvider>
+                  <CycleProvider>
+                    <SerialCycleProvider>
+                      <CarlaProvider>{children}</CarlaProvider>
+                    </SerialCycleProvider>
+                  </CycleProvider>
+                </SerialHomeProvider>
               </HomeProvider>
             </UserProvider>
           </AuthProvider>

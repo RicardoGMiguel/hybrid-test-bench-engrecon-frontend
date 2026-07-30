@@ -11,5 +11,8 @@ export const apiRoutes = {
   serialCommand: '/serial/command',
   serialCycleCommand: '/serial/cycle/command',
   serialCarlaCommand: '/serial/carla/command',
+  opcuaCommand: '/opcua/command',
+  opcuaCycleCommand: '/opcua/cycle/command',
+  opcuaCarlaCommand: '/opcua/carla/command',
   reportsChart: '/reports/chart',
 };

@@ -9,22 +9,26 @@ import { IFormSendCycleCommand } from '@modules/cycles/interfaces/IFormSendCycle
 
 import { useToast } from '@hooks/toast';
 
-interface CycleContextData {
-  SendCycleCommand: (requestData: IFormSendCycleCommand) => Promise<void>;
+interface SerialCycleContextData {
+  SendSerialCycleCommand: (requestData: IFormSendCycleCommand) => Promise<void>;
 }
 
-const CycleContext = createContext<CycleContextData>({} as CycleContextData);
+const SerialCycleContext = createContext<SerialCycleContextData>(
+  {} as SerialCycleContextData
+);
 
-interface ICycleProviderProps {
+interface ISerialCycleProviderProps {
   children: React.ReactNode;
 }
 
-const CycleProvider: React.FC<ICycleProviderProps> = ({ children }) => {
+const SerialCycleProvider: React.FC<ISerialCycleProviderProps> = ({
+  children,
+}) => {
   const { addToast } = useToast();
 
-  const SendCycleCommand = useMutation(
+  const SendSerialCycleCommand = useMutation(
     async (formData: IFormSendCycleCommand) => {
-      const { data } = await api.post(apiRoutes.opcuaCycleCommand, formData);
+      const { data } = await api.post(apiRoutes.serialCycleCommand, formData);
 
       return data;
     },
@@ -47,24 +51,24 @@ const CycleProvider: React.FC<ICycleProviderProps> = ({ children }) => {
   ).mutateAsync;
 
   return (
-    <CycleContext.Provider
+    <SerialCycleContext.Provider
       value={{
-        SendCycleCommand,
+        SendSerialCycleCommand,
       }}
     >
       {children}
-    </CycleContext.Provider>
+    </SerialCycleContext.Provider>
   );
 };
 
-function useCycle(): CycleContextData {
-  const context = useContext(CycleContext);
+function useSerialCycle(): SerialCycleContextData {
+  const context = useContext(SerialCycleContext);
 
   if (!context) {
-    throw new Error('useCycle must be used within a CycleProvider');
+    throw new Error('useSerialCycle must be used within a SerialCycleProvider');
   }
 
   return context;
 }
 
-export { CycleProvider, useCycle };
+export { SerialCycleProvider, useSerialCycle };

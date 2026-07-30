@@ -1,19 +1,19 @@
 import Title from '@components/Title';
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { useCycle } from '@modules/cycles/hooks/index';
+import { useSerialCycle } from '@modules/reducedCycles/hooks/index';
 import Button from '@components/Button';
 
-import { CyclesEnum } from '@modules/cycles/enums/cycles.enum';
+import { CyclesEnum } from '@modules/reducedCycles/enums/cycles.enum';
 
-import { CycleCommandEnum } from '@modules/cycles/enums/cycleCommand.enum';
-import CycleChart from '@modules/cycles/components/CycleChart';
-import { ICycle } from '@modules/cycles/interfaces/ICycle';
-import MessageComponent from '@modules/home/components/MessageComponent';
+import { CycleCommandEnum } from '@modules/reducedCycles/enums/cycleCommand.enum';
+import CycleChart from '@modules/reducedCycles/components/CycleChart';
+import { ICycle } from '@modules/reducedCycles/interfaces/ICycle';
+import MessageComponent from '@modules/reducedHome/components/MessageComponent';
 import themeDefaults from '@style/themeDefaults';
-import { IFormSendCycleCommand } from '@modules/cycles/interfaces/IFormSendCycleCommand';
-import { IComingData } from '@modules/home/interfaces/IComingData';
-
+import { IFormSendCycleCommand } from '@modules/reducedCycles/interfaces/IFormSendCycleCommand';
+import { IComingData } from '@modules/reducedHome/interfaces/IComingData';
+import { OnOffStateEnum } from '@modules/reducedHome/enums/onOffStates.enum';
 import HybridImage from '../../images/paralel_hybrid.jpg';
 import RedArrowImg from '../../images/red_arrow.png';
 import BlueArrowImg from '../../images/blue_arrow.png';
@@ -40,9 +40,9 @@ import {
   VehicleImg,
 } from './styles';
 
-const Cycles: React.FC = () => {
+const ReducedCycles: React.FC = () => {
   useEffect(() => {
-    document.title = 'Hybrid Test | Ciclos';
+    document.title = 'Hybrid Test | Cycles (Reduced testbench)';
   }, []);
 
   const [selectedCycle, setSelectedCycle] = useState<CyclesEnum>(
@@ -65,8 +65,8 @@ const Cycles: React.FC = () => {
     state: {
       cardanSpeed: '-',
       motorSpeed: '-',
-      motorState: false,
-      regenerationState: false,
+      motorState: '-',
+      regenerationState: '-',
       vehicleSpeed: '-',
       vehicleAcceleration: '-',
       totalTime: '-',
@@ -79,7 +79,7 @@ const Cycles: React.FC = () => {
   const [allRegenTimes, setAllRegenTimes] = useState<number[]>([]);
   const [averageRegenInterval, setAverageRegenInterval] = useState('');
 
-  const { SendCycleCommand } = useCycle();
+  const { SendSerialCycleCommand } = useSerialCycle();
 
   const readFile = useCallback(async (url: string) => {
     const response = await fetch(url);
@@ -117,7 +117,7 @@ const Cycles: React.FC = () => {
       cycle: selectedCycle,
     };
 
-    SendCycleCommand(dataToSend).then(() => {
+    SendSerialCycleCommand(dataToSend).then(() => {
       if (allRegenTimes.length > 0) {
         const soma = allRegenTimes.reduce((acc, val) => acc + val, 0);
         const media = soma / allRegenTimes.length;
@@ -134,8 +134,8 @@ const Cycles: React.FC = () => {
         state: {
           cardanSpeed: '-',
           motorSpeed: '-',
-          motorState: false,
-          regenerationState: false,
+          motorState: '-',
+          regenerationState: '-',
           vehicleSpeed: '-',
           vehicleAcceleration: '-',
           totalTime: '-',
@@ -152,11 +152,9 @@ const Cycles: React.FC = () => {
       const socket = new WebSocket('ws://localhost:8080');
 
       socket.onmessage = (event) => {
-        const newComingData = JSON.parse(event.data);
-        const newStateComingData: IComingData = newComingData.state;
+        const newComingData: IComingData = JSON.parse(event.data);
 
-        setComingData(newStateComingData);
-        console.log(newStateComingData);
+        setComingData(newComingData);
       };
 
       setWs(socket);
@@ -173,8 +171,8 @@ const Cycles: React.FC = () => {
         state: {
           cardanSpeed: '-',
           motorSpeed: '-',
-          motorState: false,
-          regenerationState: false,
+          motorState: '-',
+          regenerationState: '-',
           vehicleSpeed: '-',
           vehicleAcceleration: '-',
           totalTime: '-',
@@ -182,14 +180,14 @@ const Cycles: React.FC = () => {
         chart: [],
       });
     }
-  }, [SendCycleCommand, allRegenTimes, cycleCommand, selectedCycle, ws]);
+  }, [SendSerialCycleCommand, allRegenTimes, cycleCommand, selectedCycle, ws]);
 
   useEffect(() => {
     if (!comingData) return;
 
     const { regenerationState, totalTime } = comingData.state;
 
-    if (regenerationState) {
+    if (regenerationState === OnOffStateEnum.ON) {
       // se acabou de entrar em "on", salva o tempo de início
       if (regenStartTime === null) {
         setRegenStartTime(Number(totalTime));
@@ -217,7 +215,7 @@ const Cycles: React.FC = () => {
     <Container>
       <Header>
         <div>
-          <Title value="Standard Cycle Simulation" />
+          <Title value="Cycles Test (Reduced testbench)" />
         </div>
       </Header>
       <Content>
@@ -315,7 +313,7 @@ const Cycles: React.FC = () => {
                   </InfoText>
                 </Info>
                 <Info>
-                  <InfoLabel>Cardan Speed:</InfoLabel>
+                  <InfoLabel>Driveshaft Speed:</InfoLabel>
                   <InfoText>
                     {comingData?.state.cardanSpeed || '-'} rpm
                   </InfoText>
@@ -332,12 +330,14 @@ const Cycles: React.FC = () => {
                   <InfoLabel>Electric Motor:</InfoLabel>
                   <InfoText
                     color={
-                      comingData.state?.motorState
+                      comingData.state?.motorState === OnOffStateEnum.ON
                         ? themeDefaults.colors.greenButtonColor
                         : themeDefaults.colors.danger
                     }
                   >
-                    {comingData.state?.motorState ? 'Activated' : 'Deactivated'}
+                    {comingData.state?.motorState === OnOffStateEnum.ON
+                      ? 'Activated'
+                      : 'Deactivated'}
                   </InfoText>
                 </Info>
                 <Info>
@@ -352,12 +352,12 @@ const Cycles: React.FC = () => {
                   </InfoLabel>
                   <InfoText
                     color={
-                      comingData.state?.regenerationState
+                      comingData.state?.regenerationState === OnOffStateEnum.ON
                         ? themeDefaults.colors.greenButtonColor
                         : themeDefaults.colors.danger
                     }
                   >
-                    {comingData.state?.regenerationState
+                    {comingData.state?.regenerationState === OnOffStateEnum.ON
                       ? 'Activated'
                       : 'Deactivated'}
                   </InfoText>
@@ -369,12 +369,14 @@ const Cycles: React.FC = () => {
               <RedArrow
                 src={RedArrowImg}
                 alt="redArrow"
-                visible={!!comingData?.state.motorState}
+                visible={!!(comingData?.state.motorState === OnOffStateEnum.ON)}
               />
               <BlueArrow
                 src={BlueArrowImg}
                 alt="blueArrow"
-                visible={!!comingData?.state.regenerationState}
+                visible={
+                  !!(comingData?.state.regenerationState === OnOffStateEnum.ON)
+                }
               />
             </ImageContainer>
           </div>
@@ -384,4 +386,4 @@ const Cycles: React.FC = () => {
   );
 };
 
-export default Cycles;
+export default ReducedCycles;

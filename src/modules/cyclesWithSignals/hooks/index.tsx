@@ -24,7 +24,7 @@ const CycleProvider: React.FC<ICycleProviderProps> = ({ children }) => {
 
   const SendCycleCommand = useMutation(
     async (formData: IFormSendCycleCommand) => {
-      const { data } = await api.post(apiRoutes.serialCycleCommand, formData);
+      const { data } = await api.post(apiRoutes.opcuaCycleCommand, formData);
 
       return data;
     },

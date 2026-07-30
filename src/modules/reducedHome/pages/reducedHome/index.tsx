@@ -11,24 +11,23 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@hooks/toast';
 
-import { CouplingModesEnum } from '@modules/home/enums/couplingModes.enum';
 import SettingsInput from '@components/Form/SettingsInput';
 import Button from '@components/Button';
 
-import MessageComponent from '@modules/home/components/MessageComponent';
+import MessageComponent from '@modules/reducedHome/components/MessageComponent';
 import themeDefaults from '@style/themeDefaults';
-import { IFormSendCommand } from '@modules/home/interfaces/IFormSendCommand';
-import { CommandEnum } from '@modules/home/enums/comman.enum';
-import { IComingData } from '@modules/home/interfaces/IComingData';
-
+import { IFormSendCommand } from '@modules/reducedHome/interfaces/IFormSendCommand';
+import { CommandEnum } from '@modules/reducedHome/enums/comman.enum';
+import { IComingData } from '@modules/reducedHome/interfaces/IComingData';
+import { OnOffStateEnum } from '@modules/reducedHome/enums/onOffStates.enum';
 import {
   IOsciChartData,
   IOscilloscopeProps,
-} from '@modules/home/interfaces/IOscilloscopeProps';
-import TestChart from '@modules/home/components/testChart';
-import ResultsChart from '@modules/home/components/resultsChart';
-import Oscilloscope from '@modules/home/components/oscilloscope';
-import { useHome } from '../../hooks/index';
+} from '@modules/reducedHome/interfaces/IOscilloscopeProps';
+import TestChart from '@modules/reducedHome/components/testChart';
+import ResultsChart from '@modules/reducedHome/components/resultsChart';
+import Oscilloscope from '@modules/reducedHome/components/oscilloscope';
+import { useSerialHome } from '../../hooks/index';
 import {
   Container,
   Content,
@@ -50,42 +49,7 @@ import {
   editSettingsFormResolver,
 } from './editSettingsForm.zod';
 
-const Home: React.FC = () => {
-  // const phaseShift = 0.0008;
-
-  // const staticData: IOscilloscopeProps[] = [
-  //   {
-  //     id: 'Signal 1',
-  //     color: 'hsl(0, 70%, 50%)',
-  //     data: [
-  //       { x: 0, y: 0 },
-  //       { x: 0.01, y: 1 },
-  //       { x: 0.02, y: 0 },
-  //       { x: 0.03, y: 1 },
-  //       { x: 0.04, y: 0 },
-  //       { x: 0.05, y: 1 },
-  //       { x: 0.06, y: 0 },
-  //       { x: 0.07, y: 1 },
-  //       { x: 0.08, y: 0 },
-  //     ],
-  //   },
-  //   {
-  //     id: 'Signal 2',
-  //     color: 'hsl(240, 70%, 50%)',
-  //     data: [
-  //       { x: 0, y: 0 },
-  //       { x: 0.01 + phaseShift, y: 1 },
-  //       { x: 0.02 + phaseShift, y: 0 },
-  //       { x: 0.03 + phaseShift, y: 1 },
-  //       { x: 0.04 + phaseShift, y: 0 },
-  //       { x: 0.05 + phaseShift, y: 1 },
-  //       { x: 0.06 + phaseShift, y: 0 },
-  //       { x: 0.07 + phaseShift, y: 1 },
-  //       { x: 0.08 + phaseShift, y: 0 },
-  //     ],
-  //   },
-  // ];
-
+const ReducedHome: React.FC = () => {
   const initialTestChartData: IOscilloscopeProps[] = [
     {
       id: 'Perfil de velocidade',
@@ -107,8 +71,8 @@ const Home: React.FC = () => {
       data: [
         { x: 0, y: 0 },
         { x: 0, y: 0 },
-        { x: 1, y: 1000 },
-        { x: 11, y: 1800 },
+        { x: 1, y: 1500 },
+        { x: 11, y: 1700 },
       ],
     },
     {
@@ -121,17 +85,12 @@ const Home: React.FC = () => {
         { x: 1, y: 0 },
         { x: 2, y: 0 },
         { x: 3, y: 0 },
-        { x: 3.05, y: 30 },
-        { x: 3.1, y: 60 },
-        { x: 3.15, y: 120 },
-        { x: 3.2, y: 240 },
-        { x: 3.25, y: 480 },
-        { x: 3.3, y: 600 },
-        { x: 3.35, y: 800 },
-        { x: 3.4, y: 950 },
-        { x: 3.45, y: 1100 },
-        { x: 3.5, y: 1200 },
-        { x: 11, y: 1800 },
+        { x: 3.5, y: 200 },
+        { x: 4, y: 800 },
+        { x: 4.5, y: 1400 },
+        { x: 4.6, y: 1500 },
+        { x: 4.7, y: 1570 },
+        { x: 11, y: 1700 },
       ],
     },
   ];
@@ -142,77 +101,26 @@ const Home: React.FC = () => {
       color: '#000',
       data: [
         { x: 0, y: 0 },
-        { x: 1, y: 1000 },
-        { x: 2, y: 1100 },
-        { x: 3, y: 1180 },
-        { x: 3.05, y: 1150 },
-        { x: 3.1, y: 1030 },
-        { x: 3.15, y: 800 },
-        { x: 3.2, y: 360 },
-        { x: 3.25, y: 150 },
-        { x: 3.3, y: 60 },
-        { x: 3.35, y: 30 },
-        { x: 3.4, y: 20 },
-        { x: 3.45, y: 10 },
-        { x: 3.5, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 1500 },
+        { x: 2, y: 1510 },
+        { x: 3, y: 1520 },
+        { x: 3.5, y: 1320 },
+        { x: 4, y: 600 },
+        { x: 4.5, y: 150 },
+        { x: 4.6, y: 50 },
+        { x: 4.7, y: 20 },
         { x: 11, y: 0 },
       ],
     },
   ];
 
-  // const staticSleevePositionDiffResults: IOscilloscopeProps[] = [
-  //   {
-  //     id: 'Vel.',
-  //     color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
-  //     data: [
-  //       { x: 0, y: 0 },
-  //       { x: 0, y: 0 },
-  //       { x: 1, y: 0 },
-  //       { x: 2, y: 0 },
-  //       { x: 3, y: 0 },
-  //       { x: 4, y: 0 },
-  //       { x: 5, y: 0 },
-  //       { x: 5.6, y: 4.9 },
-  //       { x: 7, y: 4.9 },
-  //       { x: 8, y: 4.9 },
-  //       { x: 9, y: 4.9 },
-  //       { x: 10, y: 4.9 },
-  //       { x: 11, y: 4.9 },
-  //     ],
-  //   },
-  // ];
-
-  // const staticSleeveSpeedDiffResults: IOscilloscopeProps[] = [
-  //   {
-  //     id: 'Vel.',
-  //     color: 'hsl(0, 96.76113360323887%, 48.4313725490196%)',
-  //     data: [
-  //       { x: 0, y: 0 },
-  //       { x: 0, y: 0 },
-  //       { x: 1, y: 0 },
-  //       { x: 2, y: 0 },
-  //       { x: 3, y: 0 },
-  //       { x: 4, y: 0 },
-  //       { x: 5, y: 0 },
-  //       { x: 5.05, y: 6.7 },
-  //       { x: 5.2, y: 6.7 },
-  //       { x: 5.55, y: 6.7 },
-  //       { x: 5.6, y: 0 },
-  //       { x: 7, y: 0 },
-  //       { x: 8, y: 0 },
-  //       { x: 9, y: 0 },
-  //       { x: 10, y: 0 },
-  //       { x: 11, y: 0 },
-  //     ],
-  //   },
-  // ];
-
   useEffect(() => {
-    document.title = 'Hybrid Test | Home';
+    document.title = 'Hybrid Test | Coupling (Reduced testbench)';
   }, []);
 
   const { addToast } = useToast();
-  const { SendCommand, GetReportChartData } = useHome();
+  const { SendSerialCommand, GetReportChartData } = useSerialHome();
 
   const [speedResults, setSpeedResults] =
     useState<IOscilloscopeProps[]>(staticSpeedResults);
@@ -221,9 +129,9 @@ const Home: React.FC = () => {
     IOscilloscopeProps[]
   >(staticSpeedDiffResults);
 
-  const [commandCouplingInstant, setCommandCouplingInstant] = useState(3.45);
+  const [commandCouplingInstant, setCommandCouplingInstant] = useState(0);
 
-  const [couplingInstant, setCouplingInstant] = useState(3);
+  // const [couplingInstant, setCouplingInstant] = useState(0);
 
   const chartData = GetReportChartData().data;
   const chartRefetch = GetReportChartData().refetch;
@@ -234,7 +142,7 @@ const Home: React.FC = () => {
         chartData.couplingInfo?.couplingCommandInstant || 0
       );
 
-      setCouplingInstant(chartData.couplingInfo?.couplingInstant || 0);
+      // setCouplingInstant(chartData.couplingInfo?.couplingInstant || 0);
 
       const newCardanSpeedData: IOsciChartData[] =
         chartData.speedChartData?.map((item) => {
@@ -345,7 +253,6 @@ const Home: React.FC = () => {
 
   const [verticalLine, setVerticalLine] = useState(0);
 
-  // const [couplingMode, setCouplingMode] = useState<CouplingModesEnum>(CouplingModesEnum.FREE);
   const [command, setCommand] = useState<CommandEnum>(CommandEnum.stop);
   const [comingData, setComingData] = useState<IComingData>({
     message: '-',
@@ -353,7 +260,7 @@ const Home: React.FC = () => {
       cardanSpeed: '-',
       motorSpeed: '-',
       delay: '-',
-      actuatorState: false,
+      actuatorState: '-',
     },
     chart: [],
   });
@@ -425,7 +332,7 @@ const Home: React.FC = () => {
 
         const dataToSend: IFormSendCommand = {
           cmd: command,
-          mode: CouplingModesEnum.FREE,
+          mode: '-',
           cardanInitialSpeed: data.cardanInitialSpeed,
           cardanEndSpeed: data.cardanEndSpeed,
           cardanTestTotalTime: data.cardanTestTotalTime,
@@ -433,7 +340,7 @@ const Home: React.FC = () => {
         };
 
         setLastRequestTime(now);
-        await SendCommand(dataToSend);
+        await SendSerialCommand(dataToSend);
       } catch (error) {
         setIsLoading(false);
       } finally {
@@ -443,11 +350,9 @@ const Home: React.FC = () => {
           const ws = new WebSocket('ws://localhost:8080');
 
           ws.onmessage = (event) => {
-            const newComingData = JSON.parse(event.data);
-            const newStateComingData: IComingData = newComingData.state;
+            const newComingData: IComingData = JSON.parse(event.data);
 
-            // console.log(newStateComingData);
-            setComingData(newStateComingData);
+            setComingData(newComingData);
           };
         } else {
           setComingData({
@@ -456,7 +361,7 @@ const Home: React.FC = () => {
               cardanSpeed: '-',
               motorSpeed: '-',
               delay: '-',
-              actuatorState: false,
+              actuatorState: '-',
             },
             chart: [],
           });
@@ -465,7 +370,7 @@ const Home: React.FC = () => {
         chartRefetch();
       }
     },
-    [SendCommand, addToast, chartRefetch, command, lastRequestTime]
+    [SendSerialCommand, addToast, chartRefetch, command, lastRequestTime]
   );
 
   useEffect(() => {
@@ -549,7 +454,7 @@ const Home: React.FC = () => {
     <Container>
       <Header>
         <div>
-          <Title value="Coupling Test" />
+          <Title value="Coupling Test (Reduced testbench)" />
           <ModeSelectionContainer>
             <ModeSelectionButton
               selected={showResults}
@@ -557,12 +462,6 @@ const Home: React.FC = () => {
             >
               Results
             </ModeSelectionButton>
-            {/* <ModeSelectionButton
-              selected={!showResults}
-              onClick={() => setShowResults(false)}
-            >
-              Sensors
-            </ModeSelectionButton> */}
           </ModeSelectionContainer>
         </div>
       </Header>
@@ -588,7 +487,7 @@ const Home: React.FC = () => {
                       errors={errors.cardanInitialSpeed}
                       type="number"
                       min={0}
-                      max={1800} // alterar conforme necessidade
+                      max={1800}
                       onFocusCapture={() => onOpen()}
                       onBlurCapture={() => onClose()}
                     />
@@ -607,7 +506,7 @@ const Home: React.FC = () => {
                       errors={errors.cardanEndSpeed}
                       type="number"
                       min={0}
-                      max={1800} // alterar conforme necessidade
+                      max={1800}
                       onFocusCapture={() => onOpen()}
                       onBlurCapture={() => onClose()}
                     />
@@ -668,7 +567,7 @@ const Home: React.FC = () => {
                   <InfoLabel>Electric Motor speed:</InfoLabel>
                   <InfoText>{comingData.state?.motorSpeed || '-'} rpm</InfoText>
                 </Info>
-                <Info>
+                {/* <Info>
                   <InfoLabel>Delay between shafts:</InfoLabel>
                   <InfoText>
                     {Number(comingData?.state?.delay) > 0
@@ -676,54 +575,23 @@ const Home: React.FC = () => {
                       : '-'}
                     ms
                   </InfoText>
-                </Info>
+                </Info> */}
                 <Info>
                   <InfoLabel>Coupling Actuator:</InfoLabel>
                   <InfoText
                     color={
-                      comingData.state?.actuatorState
+                      comingData.state?.actuatorState === OnOffStateEnum.ON
                         ? themeDefaults.colors.greenButtonColor
                         : themeDefaults.colors.danger
                     }
                   >
-                    {comingData.state?.actuatorState
+                    {comingData.state?.actuatorState === OnOffStateEnum.ON
                       ? 'Activated'
                       : 'Deactivated'}
                   </InfoText>
                 </Info>
               </InfoContainer>
-              {/* <InfoContainer>
-                <InfoTitle>Coupling Modes</InfoTitle>
-                <CouplingModeButtons>
-                  <RadioButtonContainer>
-                    <ButtonLabel>Free</ButtonLabel>
-                    <RadioButton
-                      onClick={() => setCouplingMode(CouplingModesEnum.FREE)}
-                      selected={!!(couplingMode === CouplingModesEnum.FREE)}
-                    >
-                      <div />
-                    </RadioButton>
-                  </RadioButtonContainer>
-                  <RadioButtonContainer>
-                    <ButtonLabel>Light</ButtonLabel>
-                    <RadioButton
-                      onClick={() => setCouplingMode(CouplingModesEnum.LIGHT)}
-                      selected={!!(couplingMode === CouplingModesEnum.LIGHT)}
-                    >
-                      <div />
-                    </RadioButton>
-                  </RadioButtonContainer>
-                  <RadioButtonContainer>
-                    <ButtonLabel>Heavy</ButtonLabel>
-                    <RadioButton
-                      onClick={() => setCouplingMode(CouplingModesEnum.HEAVY)}
-                      selected={!!(couplingMode === CouplingModesEnum.HEAVY)}
-                    >
-                      <div />
-                    </RadioButton>
-                  </RadioButtonContainer>
-                </CouplingModeButtons>
-              </InfoContainer> */}
+
               <ButtonsContainer>
                 <Button
                   label="Start"
@@ -774,7 +642,6 @@ const Home: React.FC = () => {
                       axisLeftLegend="Speed {RPM)"
                       chartData={speedResults}
                       couplingCommandInstant={commandCouplingInstant}
-                      startCoupling={couplingInstant}
                     />
                   </Box>
                 </GridItem>
@@ -785,34 +652,9 @@ const Home: React.FC = () => {
                       axisLeftLegend="Speed {RPM)"
                       chartData={speedDiffResults}
                       couplingCommandInstant={commandCouplingInstant}
-                      startCoupling={couplingInstant}
                     />
                   </Box>
                 </GridItem>
-                {/* <GridItem>
-                  <Box height="100%">
-                    <ResultsChart
-                      title="Posição da luva"
-                      axisLeftLegend="Posição {mm)"
-                      chartData={staticSleevePositionDiffResults}
-                      couplingCommandInstant={3}
-                      startCoupling={5}
-                      endCoupling={5.6}
-                    />
-                  </Box>
-                </GridItem>
-                <GridItem>
-                  <Box height="100%">
-                    <ResultsChart
-                      title="Velocidade da Luva"
-                      axisLeftLegend="Velocidade {mm/s)"
-                      chartData={staticSleeveSpeedDiffResults}
-                      couplingCommandInstant={3}
-                      startCoupling={5}
-                      endCoupling={5.6}
-                    />
-                  </Box>
-                </GridItem> */}
               </Grid>
             )}
           </div>
@@ -822,4 +664,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default ReducedHome;

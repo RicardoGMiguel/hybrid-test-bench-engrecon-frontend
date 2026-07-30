@@ -24,7 +24,7 @@ const CarlaProvider: React.FC<ICarlaProviderProps> = ({ children }) => {
 
   const SendCarlaCommand = useMutation(
     async (formData: IFormSendCarlaCommand) => {
-      const { data } = await api.post(apiRoutes.serialCarlaCommand, formData);
+      const { data } = await api.post(apiRoutes.opcuaCarlaCommand, formData);
 
       return data;
     },

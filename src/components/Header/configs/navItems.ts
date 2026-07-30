@@ -12,6 +12,14 @@ export const navItems = () =>
       route: PrivatePathsEnum.CYCLES,
       label: 'Cycles',
     },
+    {
+      route: PrivatePathsEnum.REDUCED_HOME,
+      label: 'Coupling (Reduced testbench)',
+    },
+    {
+      route: PrivatePathsEnum.REDUCED_CYCLES,
+      label: 'Cycles (Reduced testbench)',
+    },
     // {
     //   route: PrivatePathsEnum.CYCLES_WITH_SIGNALS,
     //   label: 'Ciclos com sinais',

@@ -11,23 +11,27 @@ import { useToast } from '@hooks/toast';
 import { QueryKeys } from '@services/queryClient';
 import { IReportsChartData } from '../interfaces/IReportsChartData';
 
-interface HomeContextData {
-  SendCommand: (requestData: IFormSendCommand) => Promise<void>;
+interface SerialHomeContextData {
+  SendSerialCommand: (requestData: IFormSendCommand) => Promise<void>;
   GetReportChartData(): UseQueryResult<IReportsChartData>;
 }
 
-const HomeContext = createContext<HomeContextData>({} as HomeContextData);
+const SerialHomeContext = createContext<SerialHomeContextData>(
+  {} as SerialHomeContextData
+);
 
-interface IHomeProviderProps {
+interface ISerialHomeProviderProps {
   children: React.ReactNode;
 }
 
-const HomeProvider: React.FC<IHomeProviderProps> = ({ children }) => {
+const SerialHomeProvider: React.FC<ISerialHomeProviderProps> = ({
+  children,
+}) => {
   const { addToast } = useToast();
 
-  const SendCommand = useMutation(
+  const SendSerialCommand = useMutation(
     async (formData: IFormSendCommand) => {
-      const { data } = await api.post(apiRoutes.opcuaCommand, formData);
+      const { data } = await api.post(apiRoutes.serialCommand, formData);
 
       return data;
     },
@@ -71,25 +75,25 @@ const HomeProvider: React.FC<IHomeProviderProps> = ({ children }) => {
     );
 
   return (
-    <HomeContext.Provider
+    <SerialHomeContext.Provider
       value={{
-        SendCommand,
+        SendSerialCommand,
         GetReportChartData,
       }}
     >
       {children}
-    </HomeContext.Provider>
+    </SerialHomeContext.Provider>
   );
 };
 
-function useHome(): HomeContextData {
-  const context = useContext(HomeContext);
+function useSerialHome(): SerialHomeContextData {
+  const context = useContext(SerialHomeContext);
 
   if (!context) {
-    throw new Error('useHome must be used within a HomeProvider');
+    throw new Error('useSerialHome must be used within a SerialHomeProvider');
   }
 
   return context;
 }
 
-export { HomeProvider, useHome };
+export { SerialHomeProvider, useSerialHome };

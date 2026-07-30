@@ -8,8 +8,11 @@ import { useAuth } from '@modules/auth/hooks/auth';
 
 import Confirmation from '@components/Confirmation';
 import { TranslateRolePT } from '@modules/users/utils/translateRoleToPT';
+import { useLocation, useMatch } from 'react-router-dom';
+import themeDefaults from '@style/themeDefaults';
 import { navItems } from './configs/navItems';
 import DTLogo from './assets/logo_DT.png';
+import GrayDTLogo from './assets/logo_DT_gray.png';
 // import EngreconLogo from './assets/engrecon_icon_blue.png';
 
 import {
@@ -25,6 +28,10 @@ const Header: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, signOut } = useAuth();
 
+  const { pathname } = useLocation();
+
+  const pathMatch = useMatch(pathname);
+
   return (
     <>
       <Confirmation
@@ -35,10 +42,26 @@ const Header: React.FC = () => {
         onConfirm={signOut}
         onClose={onClose}
       />
-      <Container>
+      <Container
+        background={
+          pathMatch?.pathnameBase?.split('/')[1] === 'reduced' ||
+          pathMatch?.pathnameBase?.split('/')[1] === 'reduced-cycles'
+            ? themeDefaults.colors.dt_red
+            : themeDefaults.colors.dt_gray
+        }
+      >
         <LogoContent>
           <NavigationBar>
-            <img src={DTLogo} alt="DTIcon" style={{ height: 100 }} />
+            <img
+              src={
+                pathMatch?.pathnameBase?.split('/')[1] === 'reduced' ||
+                pathMatch?.pathnameBase?.split('/')[1] === 'reduced-cycles'
+                  ? DTLogo
+                  : GrayDTLogo
+              }
+              alt="DTIcon"
+              style={{ height: 100 }}
+            />
             {/* <img src={EngreconLogo} alt="EngreconLogo" id="engreconLogo" /> */}
             {navItems().map(({ route, label }) => (
               <NavItem key={label} route={route} label={label} />

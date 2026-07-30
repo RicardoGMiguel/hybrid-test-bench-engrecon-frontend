@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<{ background: string }>`
   width: 100%;
   height: 10%;
   display: flex;
@@ -10,6 +10,12 @@ export const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.dt_red};
 
   box-shadow: ${({ theme }) => theme.shadows.outer};
+
+  ${({ background }) =>
+    background &&
+    css`
+      background-color: ${background};
+    `}
 `;
 
 export const LogoContent = styled.div`
